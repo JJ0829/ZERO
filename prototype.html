@@ -175,6 +175,7 @@ const S = {
   plMenu:'딸기라떼',
   taxType:'normal',      // normal | simple
   cardRatio:0.85,
+  newPrice:0,            // 새 메뉴 판매가
 };
 
 /* ---------------- 계산 ---------------- */
@@ -411,22 +412,40 @@ V.recipe = () => {
     {k:'cream', label:'생크림 30ml', v:30},
     {k:'milk',  label:'우유 50ml',  v:50},
   ];
+  // 고른 재료로 한 개 원가 계산
+  let cost=0;
+  for(const k in sel){ const it=items[k]; cost += it.kind==='원부자재' ? it.buy*sel[k]/it.per : costOf(k)*sel[k]; }
+  cost = Math.round(cost);
+  const price = S.newPrice;
   return {
-    l:'← 매출|upload', c:'재료 알려주기', r:'2 / 3',
+    l:'← 매출|upload', c:'새 메뉴', r:'2 / 3',
     b:`
       <div class="t1">${m.menu} ${m.qty}개가 팔렸어요</div>
-      <div class="sub" style="margin:6px 0 16px">한 개에 뭐가 들어가나요? 한 번만 알려 주시면 다음부터 안 여쭤봅니다.</div>
+      <div class="sub" style="margin:6px 0 14px">처음 보는 메뉴입니다. 한 번만 알려 주시면 다음부터 안 여쭤봅니다.</div>
+
       <div class="card">
-        ${opts.map(o=>`<span class="chip ${sel[o.k]?'on':''}" data-act="chip" data-k="${o.k}" data-v="${o.v}">${o.label}</span>`).join('')}
-        <div class="mini" style="margin-top:10px">눌러서 고르세요. 수량은 나중에 고칠 수 있습니다.</div>
+        <div class="mini" style="margin-bottom:8px">얼마에 파세요?</div>
+        <div>${[4500,5000,5500,6000,6500].map(v=>`<span class="chip ${price===v?'on':''}" data-act="price" data-v="${v}">${v.toLocaleString()}원</span>`).join('')}</div>
       </div>
+
+      <div class="card">
+        <div class="mini" style="margin-bottom:8px">한 개에 뭐가 들어가나요?</div>
+        ${opts.map(o=>`<span class="chip ${sel[o.k]?'on':''}" data-act="chip" data-k="${o.k}" data-v="${o.v}">${o.label}</span>`).join('')}
+      </div>
+
+      ${price?`<div class="card soft">
+        <div class="kv"><span>판매가</span><b>${원(price)}</b></div>
+        <div class="kv"><span>재료값</span><b>${cost?'−'+원(cost):'아직 없음'}</b></div>
+        <div class="kv" style="border-bottom:0"><span>재료 빼고 남는 것</span><b class="pos">${cost?원(price-cost):'—'}</b></div>
+      </div>`:''}
+
       <div class="note">
         오늘 많이 팔린 메뉴부터 하나씩만 여쭤봅니다.<br>
-        <b>지금 넘기셔도 됩니다.</b> 모르는 메뉴는 주 1회 재고 맞출 때 정리됩니다.
+        <b>지금 넘기셔도 됩니다.</b> 판매가만 넣고 재료는 나중에 알려주셔도 됩니다.
       </div>
     `,
     f:`<div class="btn" data-go="bake">나중에</div>
-       <div class="btn ${Object.keys(sel).length?'pri':'dis'}" data-act="saveRecipe">${Object.keys(sel).length?'저장하고 다음':'재료를 고르세요'}</div>`
+       <div class="btn ${price?'pri':'dis'}" data-act="saveRecipe">${price?'저장하고 다음':'판매가를 골라주세요'}</div>`
   };
 };
 
@@ -911,7 +930,7 @@ const EX = {
   home:['홈','매일 여기서 시작합니다. <b>할 일은 파일 올리기와 버린 것 적기 둘뿐</b>이고, 발주가 있는 날에만 추천이 붙습니다. 재고를 세라고 하지 않습니다.'],
   upload:['매출 찍기','포스 마감 화면을 <b>사진으로 찍기만</b> 하면 됩니다. 파일을 내려받아 올리는 건 매일 하기엔 귀찮습니다. 글자를 못 읽은 줄은 표시해서 확인만 받습니다.'],
   menupl:['메뉴별 뜯어보기','메뉴 하나가 <b>한 개 팔릴 때 실제로 얼마 남는지</b>입니다. 재료값·인건비·카드수수료·고정비 몫·부가세까지 다 뺐습니다. 위 칩으로 메뉴를 바꿔 보세요.'],
-  recipe:['재료 알려주기','모르는 메뉴를 <b>많이 팔린 순서로 하나씩만</b> 묻습니다. 시작 전에 100줄을 등록시키지 않습니다. 넘겨도 됩니다.'],
+  recipe:['새 메뉴','메뉴를 미리 등록시키지 않습니다. 사진에서 잡힌 새 메뉴에 <b>판매가와 재료를 한 번만</b> 묻습니다. 많이 팔린 순서로 하루 1~2개씩이고, 넘겨도 됩니다. 재료를 고를 때마다 남는 돈이 바로 보입니다.'],
   bake:['오늘 구운 것','직접 만드는 품목만 나옵니다. <b>판 수만 적으면</b> 크림치즈·계란이 얼마나 나갔는지 앱이 계산합니다. 안 구운 날은 넘기면 됩니다.'],
   cost:['원가','사 오는 것은 매입가가 원가지만 <b>직접 만드는 것은 재료값 합계 ÷ 나오는 개수</b>입니다. 크림치즈 값이 오르면 여기서 바로 보입니다. 인건비·전기값은 안 넣습니다.'],
   waste:['버린 것 적기','매일 사장이 실제로 하는 유일한 입력입니다. 우유·생크림은 ml를 재지 않고 <b>통 단위 버튼</b>으로 받습니다. 금액이 바로 보입니다.'],
@@ -959,7 +978,13 @@ document.addEventListener('click', ev=>{
 
   if(act==='up'){ S.uploaded=true; }
   if(act==='chip'){ if(S.newRecipe[k]) delete S.newRecipe[k]; else S.newRecipe[k]=+v; }
-  if(act==='saveRecipe'){ S.recipeDone=true; S.screen='bake'; }
+  if(act==='price'){ S.newPrice = +v; }
+  if(act==='saveRecipe'){
+    S.recipeDone=true;
+    const m = sales.find(s=>s.menu==='딸기크로플');
+    if(m && S.newPrice) m.price = S.newPrice;
+    S.screen='bake';
+  }
   if(act==='b+'){ S.baked[k]++; }
   if(act==='b-'){ S.baked[k]=Math.max(0,S.baked[k]-1); }
   if(act==='w+'){ S.waste[k]++; }
