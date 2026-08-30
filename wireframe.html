@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>로스제로 화면 와이어프레임</title>
+<style>
+  @page { size: A4 portrait; margin: 10mm; }
+  :root { --line:#9a9a9a; --fill:#ededed; --ink:#111; --sub:#666; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:20px 0; font-family:"Malgun Gothic","맑은 고딕",system-ui,sans-serif; color:var(--ink); background:#e9e9e9; }
+  .page { display:flex; gap:16px; padding:18px; background:#fff; margin:0 auto 20px; width:794px; min-height:1123px; }
+  .cover { display:block; }
+
+  .frame { width:360px; height:800px; flex:none; border:1px solid var(--line); display:flex; flex-direction:column; background:#fff; }
+  .fh { height:44px; flex:none; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:13px; font-weight:700; }
+  .fh .back { font-weight:400; color:var(--sub); font-size:12px; }
+  .fb { flex:1; padding:12px; font-size:12px; overflow:hidden; }
+  .ff { flex:none; border-top:1px solid var(--line); padding:10px 12px; display:flex; gap:8px; }
+  .ff > * { flex:1; }
+
+  .btn { border:1px solid var(--line); border-radius:4px; padding:11px 8px; text-align:center; font-size:12px; background:#fff; }
+  .btn.pri { background:#333; color:#fff; border-color:#333; font-weight:700; }
+  .btn.dis { background:var(--fill); color:#9a9a9a; border-style:dashed; }
+  .btn.sm { padding:6px 8px; font-size:11px; }
+  .inp { border:1px solid var(--line); border-radius:3px; padding:6px 8px; background:#fff; font-size:12px; display:inline-block; min-width:40px; text-align:center; }
+  .card { border:1px solid var(--line); border-radius:5px; padding:10px; margin-bottom:8px; }
+  .card.dash { border-style:dashed; }
+  .card.soft { background:#fafafa; }
+  .sub { color:var(--sub); font-size:11px; line-height:1.6; }
+  .badge { display:inline-block; border:1px solid var(--line); border-radius:10px; padding:1px 7px; font-size:10px; color:#333; }
+  .badge.dk { background:#333; color:#fff; border-color:#333; }
+  .warn { border:1px dashed #333; background:var(--fill); padding:8px 9px; font-size:11px; border-radius:4px; line-height:1.5; }
+  .tabs { display:flex; border:1px solid var(--line); border-radius:4px; overflow:hidden; margin-bottom:10px; }
+  .tabs div { flex:1; text-align:center; padding:7px; font-size:11px; border-right:1px solid var(--line); }
+  .tabs div:last-child { border-right:0; }
+  .tabs .on { background:#333; color:#fff; font-weight:700; }
+  .lst { border-top:1px solid #ddd; }
+  .li { border-bottom:1px solid #ddd; padding:9px 2px; display:flex; align-items:center; gap:8px; }
+  .li .nm { flex:1; font-size:12px; }
+  .drop { color:#bbb; font-size:11px; }
+  .stp { display:flex; align-items:center; gap:6px; }
+  .stp b { min-width:26px; text-align:center; }
+  .pill { border:1px solid var(--line); border-radius:4px; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:14px; }
+  .tbl { width:100%; border-collapse:collapse; font-size:11px; }
+  .tbl th { border-bottom:1px solid var(--line); padding:5px 2px; text-align:right; font-size:10px; color:var(--sub); font-weight:400; }
+  .tbl th:first-child { text-align:left; }
+  .tbl td { border-bottom:1px solid #ddd; padding:6px 2px; text-align:right; }
+  .tbl td:first-child { text-align:left; }
+  .big { font-size:26px; font-weight:700; letter-spacing:-1px; }
+  .xl { font-size:38px; font-weight:700; letter-spacing:-2px; }
+  .mut { color:#aaa; }
+  .hr { height:1px; background:#ddd; margin:10px 0; }
+  .kv { display:flex; justify-content:space-between; padding:5px 0; font-size:12px; border-bottom:1px solid #eee; }
+  .empty { border:1px dashed var(--line); border-radius:5px; padding:18px 12px; text-align:center; color:var(--sub); font-size:12px; line-height:1.6; }
+  .chip { display:inline-block; border:1px solid var(--line); border-radius:12px; padding:3px 9px; font-size:11px; margin:0 4px 4px 0; }
+  .chip.on { background:#333; color:#fff; border-color:#333; }
+  .step { display:flex; gap:8px; padding:7px 0; border-bottom:1px solid #f0f0f0; font-size:11px; }
+  .step .l { flex:1; }
+  .step .v { font-weight:700; }
+
+  .notes { flex:1; min-width:0; }
+  .notes h2 { font-size:15px; margin:0; }
+  .notes .st { display:inline-block; border:1px solid var(--line); padding:2px 8px; border-radius:3px; font-size:11px; margin:6px 0 10px; }
+  .notes .st.base { background:#333; color:#fff; border-color:#333; }
+  .notes dt { font-size:10px; font-weight:700; margin-top:10px; letter-spacing:.3px; }
+  .notes dd { margin:3px 0 0; font-size:11px; line-height:1.55; color:#222; }
+  .notes .src { margin-top:14px; padding-top:8px; border-top:1px solid #ddd; font-size:10px; color:var(--sub); line-height:1.5; }
+
+  .cover h1 { font-size:25px; margin:0 0 6px; }
+  .cover .lead { font-size:12px; color:var(--sub); line-height:1.7; }
+  .cover table { width:100%; border-collapse:collapse; margin-top:12px; font-size:11px; }
+  .cover th, .cover td { border-bottom:1px solid #ddd; padding:4px; text-align:left; }
+  .cover th { background:#f4f4f4; font-size:10px; color:var(--sub); }
+  .cover h3 { font-size:13px; margin:15px 0 5px; }
+  .cover p { font-size:11px; line-height:1.65; margin:0 0 5px; }
+
+  /* 내용이 많은 쪽만 촘촘하게 */
+  .page:nth-of-type(18) .tbl td { padding:3px 2px; }
+  .page:nth-of-type(20) .li { padding:5px 2px; }
+  .page:nth-of-type(20) .hr { margin:6px 0 !important; }
+  .page:nth-of-type(20) .card { padding:7px 10px; }
+  .page:nth-of-type(20) .chip { padding:2px 8px; margin:0 3px 3px 0; }
+  .page:nth-of-type(20) .warn { padding:6px 8px; font-size:10px; }
+  .page:nth-of-type(20) .kv { padding:4px 0; }
+  .page:nth-of-type(20) .inp { padding:4px 8px; }
+  .page:nth-of-type(18) .sub { line-height:1.4; }
+
+  @media print {
+    body { background:#fff; padding:0; }
+    .page { margin:0; width:auto; min-height:auto; padding:0; page-break-after:always; }
+    .page:last-child { page-break-after:auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== 표지 ===== -->
+<section class="page cover">
+  <h1>로스제로 화면 와이어프레임</h1>
+  <div class="lead">
+    화면 13개 · 상태 19개 · 모바일 360×800 기준<br>
+    기준 문서 — 로스제로_MVP_기획서.md / 로스제로_화면_명세.md / prototype.html<br>
+    <b>눌러 보는 판은 prototype.html에 있습니다.</b> 이 문서는 인쇄해서 검토·전달하는 판입니다.
+  </div>
+
+  <h3>이 화면들이 지키는 것</h3>
+  <p>
+    1. <b>재고를 매일 세지 않습니다.</b> 재고는 앱이 계산하고 주 1회만 확인합니다.<br>
+    2. <b>매출은 사진으로 찍습니다.</b> 파일을 내려받아 올리는 건 매일 하기엔 귀찮습니다.<br>
+    3. <b>매일 하는 입력은 버린 것 하나입니다.</b> 폐기·품절·입고는 해당되는 날, 해당 품목에만 나타납니다.<br>
+    4. <b>돈 계산은 빈틈없이 합니다.</b> 재료값·인건비·카드수수료·고정비·부가세를 다 넣어 순이익과 수익률을 냅니다.<br>
+    5. <b>앱이 사장을 평가하지 않습니다.</b> 소요 시간·연속 입력 일수·적중 평가를 띄우지 않습니다.
+  </p>
+
+  <table>
+    <tr><th style="width:44px">쪽</th><th style="width:130px">화면</th><th>상태</th><th style="width:150px">언제 나오나</th></tr>
+    <tr><td>1</td><td>LZ-01 홈</td><td>기본</td><td>오늘 입력 전</td></tr>
+    <tr><td>2</td><td>LZ-01 홈</td><td>완료</td><td>오늘 할 일을 마침</td></tr>
+    <tr><td>3</td><td>LZ-02 매출 찍기</td><td>찍기 전</td><td>매일</td></tr>
+    <tr><td>4</td><td>LZ-02 매출 찍기</td><td>읽은 뒤</td><td>사진을 찍고 나서</td></tr>
+    <tr><td>5</td><td>LZ-03 재료 알려주기</td><td>모르는 메뉴 있음</td><td>새 메뉴가 팔림</td></tr>
+    <tr><td>6</td><td>LZ-03 재료 알려주기</td><td>다 앎</td><td>모르는 메뉴 없음</td></tr>
+    <tr><td>7</td><td>LZ-04 오늘 구운 것</td><td>기본</td><td>직접 만드는 품목이 있을 때</td></tr>
+    <tr><td>8</td><td>LZ-05 원가</td><td>기본</td><td>원가를 눌렀을 때</td></tr>
+    <tr><td>9</td><td>LZ-06 버린 것 적기</td><td>기본</td><td>매일</td></tr>
+    <tr><td>10</td><td>LZ-07 받은 물건 확인</td><td>기본</td><td>납품일 다음 입력</td></tr>
+    <tr><td>11</td><td>LZ-08 오늘 할 일</td><td>기본</td><td>발주 요일</td></tr>
+    <tr><td>12</td><td>LZ-08 오늘 할 일</td><td>발주 없는 날</td><td>납품 요일 아님</td></tr>
+    <tr><td>13</td><td>LZ-09 추천 상세</td><td>기본</td><td>카드 선택</td></tr>
+    <tr><td>14</td><td>LZ-10 확정 완료</td><td>기본</td><td>확정 후</td></tr>
+    <tr><td>15</td><td>LZ-11 결과</td><td>어제</td><td>홈에서 진입</td></tr>
+    <tr><td>16</td><td>LZ-11 결과</td><td>버린 것</td><td>탭 전환</td></tr>
+    <tr><td>17</td><td>LZ-11 결과</td><td>수익</td><td>탭 전환</td></tr>
+    <tr><td>18</td><td>LZ-12 메뉴별 뜯어보기</td><td>기본</td><td>수익 탭에서 진입</td></tr>
+    <tr><td>19</td><td>LZ-13 고정비 등록</td><td>기본</td><td>처음 1회 + 값이 바뀔 때</td></tr>
+    <tr><td>20</td><td>LZ-14 재고 맞추기</td><td>기본</td><td>주 1회</td></tr>
+  </table>
+
+  <h3>매일 흐름</h3>
+  <p><b>홈 → 매출 찍기 → (모르는 메뉴 있으면) 재료 알려주기 → 오늘 구운 것 → 버린 것 적기 → (납품일이면) 받은 물건 확인 → 오늘 할 일 → 상세 → 확정</b></p>
+  <p>수치는 검토용 예시입니다. 실제 값은 W1에 지인 카페에서 확인한 정보로 대체합니다.</p>
+</section>
+
+
+<!-- 1 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span>8월 30일 (일)</span><span class="badge">테스트카페</span></div>
+    <div class="fb">
+      <div style="font-size:17px;font-weight:700;line-height:1.4">오늘 매출을 올려 주세요</div>
+      <div class="sub" style="margin:6px 0 16px">사진 한 장 찍고, 버린 것만 적으면 끝납니다</div>
+      <div class="card">
+        <span class="badge dk">오늘은 발주하는 날</span>
+        <div class="sub" style="margin-top:9px">A베이커리 · B유통 납품 요일입니다.<br>매출을 올리면 시킬 수량을 알려드립니다.</div>
+      </div>
+      <div class="hr"></div>
+      <div class="sub" style="margin-bottom:6px">어제 결과</div>
+      <div class="card">
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px">어제 4,800원어치를 버렸습니다</div>
+        <div class="sub">크로플 2개 · 생크림 1통</div>
+        <div class="btn sm" style="margin-top:10px">어제 결과 보기</div>
+      </div>
+      <div class="card dash">
+        <span class="badge">주 1회</span>
+        <div style="font-size:13px;font-weight:700;margin:8px 0 4px">재고 맞추기</div>
+        <div class="sub">앱이 계산한 재고가 맞는지 일요일에 한 번만 확인합니다.</div>
+        <div class="btn sm" style="margin-top:10px">지금 확인하기</div>
+      </div>
+    </div>
+    <div class="ff"><div class="btn pri">시작하기</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-01 홈</h2><div class="st base">기본 상태</div>
+    <dl>
+      <dt>목적</dt><dd>마감 직후 연 사장이 오늘 할 일과 지난 결과를 한 화면에서 판단한다.</dd>
+      <dt>어제 결과 요약 규칙</dt><dd><b>버린 금액을 숫자로 쓴다.</b> "폐기 3건"이 아니라 "어제 4,800원어치를 버렸습니다". 금액은 폐기 수량 × 원가로 계산하며, 직접 만드는 품목은 매입가가 아니라 계산된 원가를 쓴다.</dd>
+      <dt>표시하지 않는 것</dt><dd>연속 입력 일수, 입력 소요 시간. 스트릭은 하루 끊기면 그만둘 이유가 되고, 시간 목표는 개발자의 것이지 사장의 과제가 아니다.</dd>
+      <dt>주 1회 카드</dt><dd>재고 맞추기는 매일이 아니라 주 1회다. 배지에 <b>주 1회</b>를 붙여 매일 해야 하는 일로 오해하지 않게 한다.</dd>
+      <dt>다음 화면</dt><dd>시작하기 → LZ-02 / 어제 결과 → LZ-11 / 재고 확인 → LZ-14</dd>
+    </dl>
+    <div class="src">근거 — 기획서 7장 1단계 · 14장 R6</div>
+  </div>
+</section>
+
+
+<!-- 2 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span>8월 30일 (일)</span><span class="badge">테스트카페</span></div>
+    <div class="fb">
+      <div style="font-size:17px;font-weight:700;line-height:1.4">오늘 할 일을 마쳤습니다</div>
+      <div class="sub" style="margin:6px 0 16px">발주 3건을 확정했습니다 · 주문 마감 15:00</div>
+      <div class="card soft">
+        <div class="kv"><span>오늘 버린 금액</span><b>2,400원</b></div>
+        <div class="kv" style="border-bottom:0"><span>오늘 남은 돈</span><b>417,883원</b></div>
+      </div>
+      <div class="hr"></div>
+      <div class="sub" style="margin-bottom:6px">어제 결과</div>
+      <div class="card">
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px">어제 4,800원어치를 버렸습니다</div>
+        <div class="btn sm" style="margin-top:10px">어제 결과 보기</div>
+      </div>
+    </div>
+    <div class="ff"><div class="btn">다시 하기</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-01 홈</h2><div class="st">완료 상태</div>
+    <dl>
+      <dt>언제</dt><dd>오늘 날짜의 기록이 저장되어 있다.</dd>
+      <dt>달라지는 점</dt><dd>· 주 버튼이 <b>시작하기 → 다시 하기</b><br>· 오늘 버린 금액과 <b>오늘 남은 돈</b>을 함께 보여준다<br>· 발주를 확정했으면 건수와 마감 시각을 적는다</dd>
+      <dt>왜 "남은 돈"을 홈에 두는가</dt><dd>폐기 금액만 보여주면 매일 손실만 확인하는 화면이 된다. 오늘 얼마 남았는지가 같이 보여야 다음 날 또 연다.</dd>
+      <dt>다음 화면</dt><dd>다시 하기 → LZ-02 (기존 값이 채워진 상태)</dd>
+    </dl>
+    <div class="src">근거 — 기획서 10장 성공 지표 · 15장 유료 전환</div>
+  </div>
+</section>
+
+
+<!-- 3 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 홈</span><span>매출 찍기</span><span class="badge">1 / 3</span></div>
+    <div class="fb">
+      <div class="sub" style="margin-bottom:14px">포스 마감 정산 화면을 그대로 찍어 주세요.</div>
+      <div class="empty" style="padding:44px 14px;border-width:2px">
+        <div style="font-size:30px">📷</div>
+        <div style="font-size:14px;font-weight:700;color:#111;margin-top:10px">사진 찍기</div>
+        <div class="sub" style="margin-top:6px">메뉴랑 수량이 보이게만 찍으면 됩니다</div>
+      </div>
+      <div class="warn" style="margin-top:14px"><b>글자를 못 알아봐도 괜찮습니다.</b><br>읽은 값을 보여드리니 틀린 것만 고치시면 됩니다.</div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <div class="btn sm" style="flex:1">앨범에서 고르기</div>
+        <div class="btn sm" style="flex:1">직접 입력하기</div>
+      </div>
+      <div class="hr"></div>
+      <div class="sub">어제 찍은 사진도 남아 있어 나중에 다시 확인할 수 있습니다.</div>
+    </div>
+    <div class="ff"></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-02 매출 찍기</h2><div class="st base">찍기 전</div>
+    <dl>
+      <dt>목적</dt><dd>메뉴별 판매 수량을 받는다. 이 값에서 재료 소모량·재고·원가·이익이 전부 계산된다.</dd>
+      <dt>왜 파일이 아니라 사진인가</dt><dd>매출 파일을 내려받아 올리는 건 <b>매일 하기엔 귀찮다.</b> 포스 화면을 찍는 건 3초다. 매일 반복하는 동작은 가장 짧은 것으로 만든다.</dd>
+      <dt>화면 구성</dt><dd>· 촬영 버튼을 화면의 절반 이상으로 크게 둔다. 한 손으로 누른다<br>· 무엇을 찍어야 하는지 한 줄로 적는다<br>· 앨범 선택과 직접 입력은 보조 버튼으로 아래에 둔다</dd>
+      <dt>미리 안심시키는 문구</dt><dd>글자를 못 읽을 수 있다는 걸 <b>찍기 전에</b> 알린다. 실패를 겪고 나서 알면 신뢰를 잃는다.</dd>
+      <dt>다음 화면</dt><dd>촬영 → LZ-02 읽은 뒤</dd>
+      <dt>개발 주의</dt><dd>찍은 사진은 보관한다. 숫자가 이상할 때 사장이 원본을 다시 볼 수 있어야 한다.</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-02 · 14장 R16</div>
+  </div>
+</section>
+
+
+<!-- 4 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 홈</span><span>매출 찍기</span><span class="badge">1 / 3</span></div>
+    <div class="fb">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+        <div style="width:60px;height:80px;border:1px solid var(--line);border-radius:4px;background:#f4f4f4;display:flex;align-items:center;justify-content:center">🧾</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700">사진에서 읽었습니다</div>
+          <div class="sub" style="margin-top:3px">메뉴 7줄 · 총 167잔</div>
+          <div class="btn sm" style="margin-top:7px;display:inline-block;padding:5px 9px">다시 찍기</div>
+        </div>
+      </div>
+      <div class="warn"><b>1줄은 흐릿해서 자신이 없습니다.</b> 아래 표시된 줄만 확인해 주세요.</div>
+      <div class="lst" style="margin-top:10px">
+        <div class="li"><span class="nm">크로플</span><b>16</b></div>
+        <div class="li"><span class="nm">바스크치즈케이크</span><b>7</b></div>
+        <div class="li"><span class="nm">초코쿠키</span><b>12</b></div>
+        <div class="li"><span class="nm">딸기라떼</span><b>42</b></div>
+        <div class="li" style="background:#f4f4f4"><span class="nm">크림라떼<div class="sub"><b>흐릿해요 — 맞나요?</b></div></span>
+          <span class="stp"><span class="pill">−</span><b>18</b><span class="pill">+</span></span></div>
+        <div class="li"><span class="nm">아메리카노</span><b>63</b></div>
+        <div class="li"><span class="nm">딸기크로플 <span class="sub">· 재료 모름</span></span><b>9</b></div>
+      </div>
+      <div class="hr"></div>
+      <div class="sub">고친 값은 기억해 뒀다가 다음 사진부터 더 잘 읽습니다.</div>
+    </div>
+    <div class="ff"><div class="btn pri">다음</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-02 매출 찍기</h2><div class="st">읽은 뒤</div>
+    <dl>
+      <dt>언제</dt><dd>사진을 찍어 글자를 읽어낸 뒤.</dd>
+      <dt>가장 중요한 규칙</dt><dd><b>전부 다시 확인시키지 않는다.</b> 7줄을 모두 검사하게 하면 직접 입력과 다를 게 없다. <b>자신 없는 줄만</b> 표시하고 나머지는 숫자만 보여준다.</dd>
+      <dt>확인이 필요한 줄</dt><dd>· 배경을 달리해 눈에 띄게 한다<br>· 왜 확인이 필요한지 쓴다 — "흐릿해요"<br>· 그 줄에만 +/− 버튼을 둔다. 키패드를 띄우지 않는다</dd>
+      <dt>재료 모름 표시</dt><dd>레시피가 없는 메뉴는 여기서 미리 표시해 둔다. 다음 화면에서 물어볼 대상이라는 예고다.</dd>
+      <dt>학습</dt><dd>사장이 고친 값은 저장해 다음 인식에 쓴다. 매일 같은 포스 화면을 찍으므로 며칠이면 정확해진다.</dd>
+      <dt>다음 화면</dt><dd>모르는 메뉴 있으면 LZ-03, 없으면 LZ-04</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-02 · 7장 2단계</div>
+  </div>
+</section>
+
+
+<!-- 5 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 매출</span><span>재료 알려주기</span><span class="badge">2 / 3</span></div>
+    <div class="fb">
+      <div style="font-size:17px;font-weight:700;line-height:1.4">딸기크로플 9개가 팔렸어요</div>
+      <div class="sub" style="margin:6px 0 16px">한 개에 뭐가 들어가나요? 한 번만 알려 주시면 다음부터 안 여쭤봅니다.</div>
+      <div class="card">
+        <span class="chip on">크로플 1개</span><span class="chip on">딸기 30g</span>
+        <span class="chip">생크림 30ml</span><span class="chip">우유 50ml</span>
+        <div class="sub" style="margin-top:10px">눌러서 고르세요. 수량은 나중에 고칠 수 있습니다.</div>
+      </div>
+      <div class="warn">
+        오늘 많이 팔린 메뉴부터 하나씩만 여쭤봅니다.<br>
+        <b>지금 넘기셔도 됩니다.</b> 모르는 메뉴는 주 1회 재고 맞출 때 정리됩니다.
+      </div>
+    </div>
+    <div class="ff"><div class="btn">나중에</div><div class="btn pri">저장하고 다음</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-03 재료 알려주기</h2><div class="st base">모르는 메뉴 있음</div>
+    <dl>
+      <dt>목적</dt><dd>메뉴 한 개에 재료가 얼마나 들어가는지 받는다. 원부자재 소모량과 원가 양쪽의 근거가 된다.</dd>
+      <dt>왜 한 번에 등록시키지 않는가</dt><dd>재고관리 앱을 그만두는 가장 흔한 이유가 초기 등록 부담이다. 메뉴 30개 × 재료 4개면 시작 전에 120줄이다. <b>많이 팔린 메뉴부터 하루 1~2개씩만</b> 묻는다. 상위 5개 메뉴가 판매의 70%라 며칠이면 대부분 잡힌다.</dd>
+      <dt>입력 방식</dt><dd>칩을 눌러 고른다. 등록된 A등급 품목과 흔한 사용량을 후보로 미리 만들어 둔다. 숫자를 직접 치는 건 고칠 때만.</dd>
+      <dt>넘길 수 있어야 하는 이유</dt><dd>강제하면 마감 시간에 걸려 다음 날 앱을 안 연다. 모르는 메뉴는 <b>소모량 미상</b>으로 두고 억지로 추정하지 않는다.</dd>
+      <dt>다음 화면</dt><dd>LZ-04</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-03 · 9장 · 14장 R17</div>
+  </div>
+</section>
+
+
+<!-- 6 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 홈</span><span>알려주신 재료</span><span class="badge"></span></div>
+    <div class="fb">
+      <div class="warn" style="margin-bottom:12px"><b>지금은 다 알고 있습니다.</b><br>새 메뉴가 팔리면 그때 알아서 여쭤봅니다. 미리 등록하실 필요 없습니다.</div>
+      <div class="lst">
+        <div class="li" style="display:block"><div style="display:flex"><span class="nm"><b>크로플</b></span><span class="sub">고치기</span></div><div class="sub" style="margin-top:3px">크로플 1개</div></div>
+        <div class="li" style="display:block"><div style="display:flex"><span class="nm"><b>바스크치즈케이크</b></span><span class="sub">고치기</span></div><div class="sub" style="margin-top:3px">바스크치즈케이크 1개 <span class="badge">직접 만듦</span></div></div>
+        <div class="li" style="display:block"><div style="display:flex"><span class="nm"><b>딸기라떼</b></span><span class="sub">고치기</span></div><div class="sub" style="margin-top:3px">우유 200ml · 딸기 40g</div></div>
+        <div class="li" style="display:block"><div style="display:flex"><span class="nm"><b>크림라떼</b></span><span class="sub">고치기</span></div><div class="sub" style="margin-top:3px">우유 150ml · 생크림 50ml</div></div>
+        <div class="li" style="display:block"><div style="display:flex"><span class="nm"><b>아메리카노</b></span><span class="sub">고치기</span></div><div class="sub" style="margin-top:3px">원두 18g</div></div>
+      </div>
+    </div>
+    <div class="ff"><div class="btn">홈으로</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-03 재료 알려주기</h2><div class="st">다 앎</div>
+    <dl>
+      <dt>언제</dt><dd>모르는 메뉴가 없다. 매일 흐름에서는 이 화면을 건너뛰고, 목록에서 직접 들어왔을 때만 보인다.</dd>
+      <dt>이 화면이 필요한 이유</dt><dd>이전 판에는 이 상태가 없어서 <b>모르는 메뉴가 없으면 다른 화면을 대신 그렸다.</b> 목록에는 "재료 알려주기"가 켜져 있는데 화면은 다른 것이 나오는 버그였다. 빈 상태에도 제 화면을 준다.</dd>
+      <dt>표시값</dt><dd>메뉴별 등록된 재료. 직접 만드는 품목에는 배지를 붙인다.</dd>
+      <dt>고치기</dt><dd>레시피는 바뀐다. 시즌 메뉴가 바뀌거나 용량을 조절하면 여기서 고친다. <b>고친 날짜 이후 기록에만 적용하고 지난 계산을 소급해 바꾸지 않는다.</b></dd>
+      <dt>다음 화면</dt><dd>LZ-01</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-03 / 시제품 검토에서 발견한 버그 대응</div>
+  </div>
+</section>
+
+
+<!-- 7 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 매출</span><span>오늘 구운 것</span><span class="badge"></span></div>
+    <div class="fb">
+      <div class="sub" style="margin-bottom:12px">오늘 몇 판 구우셨나요? 안 구운 날은 그냥 넘기시면 됩니다.</div>
+      <div class="card">
+        <div style="display:flex;align-items:flex-start">
+          <div style="flex:1"><b style="font-size:14px">바스크치즈케이크</b><div class="sub" style="margin-top:3px">1판 = 8조각 · 70분</div></div>
+          <span class="stp"><span class="pill">−</span><b>2</b><span class="pill">+</span></span>
+        </div>
+        <div class="sub" style="margin-top:9px;padding-top:9px;border-top:1px solid #eee">한 판에 크림치즈 500g · 계란 4개 · 생크림 200ml</div>
+        <div class="kv" style="margin-top:6px"><span>나온 조각</span><b>16조각</b></div>
+        <div class="kv"><span>들어간 재료값</span><b>17,760원</b></div>
+        <div class="kv" style="border-bottom:0"><span>한 조각 원가</span><b>1,110원</b></div>
+      </div>
+      <div class="warn">판 수만 적으면 <b>재료가 얼마나 나갔는지</b> 앱이 계산합니다.<br>크림치즈·계란을 따로 세실 필요 없습니다.</div>
+      <div class="btn sm" style="margin-top:10px">한 조각 원가가 어떻게 나오는지 보기</div>
+    </div>
+    <div class="ff"><div class="btn pri">다음</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-04 오늘 구운 것</h2><div class="st base">기본</div>
+    <dl>
+      <dt>목적</dt><dd>직접 만드는 품목을 몇 판 만들었는지 받는다. 재료 소모와 재고 증가가 여기서 계산된다.</dd>
+      <dt>왜 필요한가</dt><dd>사 오는 품목은 입고가 발주 확정 수량으로 잡히지만, <b>직접 만드는 것은 만든 만큼이 곧 입고</b>다. 이 값이 없으면 재고 계산이 틀어진다.</dd>
+      <dt>판 수만 받는 이유</dt><dd>크림치즈 500g, 계란 4개를 매번 적게 하지 않는다. <b>레시피를 알고 있으니 판 수 하나면 충분하다.</b></dd>
+      <dt>표시값</dt><dd>1판에서 나오는 개수, 걸리는 시간, 한 판 재료, 판 수를 넣으면 나온 조각·재료값·한 조각 원가</dd>
+      <dt>안 구운 날</dt><dd>0으로 두고 넘긴다. 직접 만드는 품목이 없는 매장은 이 화면을 아예 건너뛴다.</dd>
+      <dt>다음 화면</dt><dd>LZ-06 (납품일이면 LZ-07을 먼저)</dd>
+    </dl>
+    <div class="src">근거 — 기획서 3-1장 A등급 두 종류 · 9장 추천 로직 0단계</div>
+  </div>
+</section>
+
+
+<!-- 8 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 구운 것</span><span>원가</span><span class="badge">바스크치즈</span></div>
+    <div class="fb">
+      <div style="text-align:center;padding:8px 0 16px">
+        <div class="sub">한 조각 원가</div>
+        <div><span class="xl">2,641</span><span class="sub" style="font-size:14px">원</span></div>
+        <div class="sub">6,500원에 팔면 <b>3,859원</b> 남습니다</div>
+      </div>
+      <div class="sub" style="margin-bottom:4px">한 판에 들어가는 것</div>
+      <div class="step"><span class="l">크림치즈 500g<div class="sub">12,000원 / 1000g</div></span><span class="v">6,000원</span></div>
+      <div class="step"><span class="l">계란 4개<div class="sub">9,000원 / 30개</div></span><span class="v">1,200원</span></div>
+      <div class="step"><span class="l">생크림 200ml<div class="sub">4,200원 / 500ml</div></span><span class="v">1,680원</span></div>
+      <div class="step" style="border-top:1px solid var(--line);border-bottom:0"><span class="l"><b>한 판 재료값</b></span><span class="v">8,880원</span></div>
+      <div class="step" style="border-bottom:0"><span class="l">만드는 시간 70분 × 시급 10,500원<div class="sub">견주어 보라고 넣은 참고값</div></span><span class="v">12,250원</span></div>
+      <div class="step" style="border-top:1px solid var(--line);border-bottom:0"><span class="l"><b>한 판</b></span><span class="v"><b>21,130원</b></span></div>
+      <div class="step" style="border-bottom:0"><span class="l">8조각이 나오니까</span><span class="v">÷ 8</span></div>
+      <div class="step" style="border-top:1px solid var(--line);border-bottom:0"><span class="l"><b>한 조각</b></span><span class="v"><b>2,641원</b></span></div>
+      <div class="card soft" style="margin-top:12px">
+        <div class="sub" style="margin-bottom:6px">사 오는 것과 견주면</div>
+        <div class="kv"><span>직접 구움</span><b>2,641원</b></div>
+        <div class="kv"><span>사 옴 (A베이커리)</span><b>2,600원</b></div>
+        <div class="kv" style="border-bottom:0"><span>차이</span><b>+41원</b></div>
+      </div>
+    </div>
+    <div class="ff"><div class="btn">돌아가기</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-05 원가</h2><div class="st base">기본</div>
+    <dl>
+      <dt>목적</dt><dd>직접 만드는 품목의 한 개당 원가가 어떻게 나왔는지 보여준다.</dd>
+      <dt>인건비를 넣는 이유</dt><dd>재료값만 보면 1,110원이라 사 오는 2,600원보다 훨씬 싸 보인다. <b>만드는 70분을 넣으면 2,641원이 되어 사 오는 것보다 비싸다.</b> 이 비교가 없으면 사장은 손해 보는 선택을 계속한다.</dd>
+      <dt>사 오는 것과 견주는 카드</dt><dd>같은 품목을 사 올 때 가격을 알고 있으면 나란히 놓는다. 모르면 이 카드를 그리지 않는다.</dd>
+      <dt>손익에서는 다시 빼지 않는다</dt><dd>여기 적은 만드는 인건비는 <b>참고값</b>이다. 그 시간은 하루 인건비(시급 × 근무시간)에 이미 들어 있으므로 손익에서 또 빼면 이중 계산이다.</dd>
+      <dt>여기 안 들어가는 것</dt><dd>임대료·전기·수도는 메뉴 하나에 나눠 붙이지 않고 <b>하루 매출에서 한 번에 뺀다.</b> 그 계산은 LZ-11 수익 탭과 LZ-12에 있다.</dd>
+      <dt>시급</dt><dd>매장 설정(LZ-13)에서 받은 값을 쓴다.</dd>
+    </dl>
+    <div class="src">근거 — 기획서 3-1장 · 8장 F-10</div>
+  </div>
+</section>
+
+
+<!-- 9 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 구운 것</span><span>버린 것 적기</span><span class="badge">3 / 3</span></div>
+    <div class="fb">
+      <div class="sub" style="margin-bottom:12px">오늘 버린 것만 적어 주세요. 없으면 그냥 넘기시면 됩니다.</div>
+      <div class="lst">
+        <div class="li"><span class="nm">크로플<div class="sub">1,800원 / 개</div></span><span class="stp"><span class="pill">−</span><b>1</b><span class="pill">+</span></span></div>
+        <div class="li"><span class="nm">바스크치즈케이크<div class="sub">2,641원 / 개 · 직접 만듦</div></span><span class="stp"><span class="pill">−</span><b>0</b><span class="pill">+</span></span></div>
+        <div class="li"><span class="nm">초코쿠키<div class="sub">900원 / 개</div></span><span class="stp"><span class="pill">−</span><b>0</b><span class="pill">+</span></span></div>
+        <div class="li" style="display:block">
+          <div style="display:flex"><span class="nm">우유 1L<div class="sub">1,900원 / 통</div></span><b>1/4통 · 475원</b></div>
+          <div style="margin-top:8px"><span class="chip">없음</span><span class="chip on">1/4</span><span class="chip">반 통</span><span class="chip">1통</span></div>
+        </div>
+        <div class="li" style="display:block">
+          <div style="display:flex"><span class="nm">생크림 500ml<div class="sub">4,200원 / 통</div></span><b>반 통 · 2,100원</b></div>
+          <div style="margin-top:8px"><span class="chip">없음</span><span class="chip">1/4</span><span class="chip on">반 통</span><span class="chip">1통</span></div>
+        </div>
+      </div>
+      <div class="card soft" style="margin-top:12px"><div class="kv" style="border-bottom:0"><span>오늘 버린 금액</span><b>4,375원</b></div></div>
+      <div class="warn">우유·생크림은 ml를 재지 않습니다. <b>통 단위로 대충 고르면 됩니다.</b></div>
+    </div>
+    <div class="ff"><div class="btn pri">다 했어요</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-06 버린 것 적기</h2><div class="st base">기본</div>
+    <dl>
+      <dt>목적</dt><dd><b>매일 사장이 실제로 하는 유일한 입력이다.</b> 앱은 "줄어든 양"만 알지 팔린 건지 버린 건지 구분할 수 없다.</dd>
+      <dt>단위를 나누는 이유</dt><dd>· 개수로 세는 것(크로플·케이크)은 +/− 버튼<br>· 통으로 쓰는 것(우유·생크림)은 <b>없음 / 1/4 / 반 통 / 1통</b> 칩. 마감 후에 ml를 재는 사람은 없다</dd>
+      <dt>금액을 옆에 붙이는 이유</dt><dd>"반 통"보다 <b>"2,100원"</b>이 다음에 덜 버리게 만든다. 하단에 오늘 합계를 실시간으로 보여준다.</dd>
+      <dt>원가 표기</dt><dd>직접 만드는 품목은 매입가가 없으므로 <b>계산된 원가</b>를 쓰고 "직접 만듦"을 붙인다. 여기에는 만드는 인건비까지 들어간다 — 버린 케이크는 재료뿐 아니라 시간도 버린 것이다.</dd>
+      <dt>버릴 게 없는 날</dt><dd>전부 0인 채로 넘긴다. 확인을 강요하지 않는다.</dd>
+      <dt>다음 화면</dt><dd>납품일이면 LZ-07, 아니면 LZ-08</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-04 · 10장 폐기 금액 · 14장 R6</div>
+  </div>
+</section>
+
+
+<!-- 10 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 폐기</span><span>받은 물건 확인</span><span class="badge"></span></div>
+    <div class="fb">
+      <div style="font-size:17px;font-weight:700;line-height:1.4">어제 시킨 게 왔나요?</div>
+      <div class="sub" style="margin:6px 0 16px">A베이커리에 어제 주문한 수량입니다.</div>
+      <div class="card">
+        <div class="li"><span class="nm">크로플</span><b>12개</b></div>
+        <div class="li" style="border-bottom:0"><span class="nm">바스크치즈케이크용 크림치즈</span><b>1kg</b></div>
+      </div>
+      <div class="warn">이 확인 한 번이면 <b>재고를 세지 않아도</b> 앱이 지금 몇 개인지 압니다.</div>
+    </div>
+    <div class="ff"><div class="btn">다르게 왔어요</div><div class="btn pri">그대로 왔어요</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-07 받은 물건 확인</h2><div class="st base">기본</div>
+    <dl>
+      <dt>언제</dt><dd>어제 발주를 확정한 거래처의 납품이 들어온 날. <b>납품일 다음 입력 때만</b> 나타난다.</dd>
+      <dt>왜 받는가</dt><dd>재고 계산식의 입력값이다. <code>오늘 재고 = 어제 재고 + 입고 − 소모 − 폐기</code>. 동시에 실제 채택률 지표의 원천이다 — 발주는 앱 밖에서 일어나므로 확정 클릭은 실제 발주를 뜻하지 않는다.</dd>
+      <dt>부담을 최소로 만드는 장치</dt><dd>· 확정 수량이 <b>기본값으로 채워져 있다</b><br>· 대부분 그대로 오므로 버튼 한 번이면 끝난다<br>· 다를 때만 해당 품목을 고친다<br>· 발주한 품목만 보여준다</dd>
+      <dt>다음 화면</dt><dd>LZ-08</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-05 · 10장 실제 채택률</div>
+  </div>
+</section>
+
+
+<!-- 11 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span>오늘 할 일</span><span class="badge dk">8월 30일</span></div>
+    <div class="fb">
+      <div class="sub" style="margin-bottom:7px">주방</div>
+      <div class="card dash">
+        <span class="badge dk">내일 구울 것</span>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:9px">
+          <div><b style="font-size:14px">바스크치즈케이크</b><div class="sub" style="margin-top:3px">1판 = 8조각 · 70분</div></div>
+          <div><span class="big">2</span><span class="sub">판</span></div>
+        </div>
+        <div class="sub" style="margin-top:9px;padding-top:9px;border-top:1px dashed #ccc">7일 평균 14조각 · 주말 +3조각 · 지금 남은 것 1조각 → 16조각 = <b>2판</b></div>
+        <div class="warn" style="margin-top:9px"><b>크림치즈가 모자랍니다.</b> 지금 1.2kg 있고 2판에 1kg이 듭니다. 아래 B유통 발주에 넣었습니다.</div>
+      </div>
+      <div class="hr"></div>
+      <div class="sub" style="margin-bottom:7px">발주 · 마감 15:00</div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div><b style="font-size:13px">크로플</b><div class="sub" style="margin-top:2px">A베이커리 · 6개 단위</div></div>
+          <div><span class="big">12</span><span class="sub">개</span></div>
+        </div>
+        <div class="sub" style="margin-top:8px;padding-top:8px;border-top:1px dashed #ccc">7일 평균 13개 · 주말 +3개 · 지금 남은 것 2개 · 6개 단위로 맞춤 → <b>12개</b></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div><b style="font-size:13px">크림치즈 1kg</b><div class="sub" style="margin-top:2px">B유통 · 낱개</div></div>
+          <div><span class="big">1</span><span class="sub">개</span></div>
+        </div>
+        <div class="sub" style="margin-top:8px;padding-top:8px;border-top:1px dashed #ccc">내일 2판에 1kg 필요 · 지금 1.2kg · 모레치까지 보면 1kg 부족 → <b>1개</b></div>
+      </div>
+    </div>
+    <div class="ff"><div class="btn pri">전체 확정</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-08 오늘 할 일</h2><div class="st base">기본 — 발주 요일</div>
+    <dl>
+      <dt>주방과 발주를 한 화면에 두는 이유</dt><dd>굽는 카페의 진짜 고민은 "몇 개 시킬까"가 아니라 <b>"몇 판 구울까"</b>다. 그리고 구울 양이 정해져야 재료를 얼마나 시킬지가 나온다. 두 결정은 붙어 있어서 화면을 나누면 사장이 두 번 계산한다.</dd>
+      <dt>순서</dt><dd>주방이 위, 발주가 아래. 원인이 위에 있고 결과가 아래에 있다.</dd>
+      <dt>재료 부족 경고</dt><dd>구울 양에 견줘 재료가 모자라면 그 자리에서 알리고 <b>발주에 자동으로 넣는다.</b> 사장이 스스로 환산하지 않게 한다.</dd>
+      <dt>근거 표시 규칙</dt><dd>계산 근거 한 줄은 <b>카드에 항상 펼쳐 둔다.</b> 접기로 감추지 않는다. 상세 진입은 강제하지 않되 열어봤는지는 기록한다(근거 열람률 — H0의 행동 근거).</dd>
+      <dt>다음 화면</dt><dd>카드 → LZ-09 / 전체 확정 → LZ-10</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-07·F-08 · 9장 · 10장 근거 열람률</div>
+  </div>
+</section>
+
+
+<!-- 12 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span>오늘 요약</span><span class="badge">8월 31일</span></div>
+    <div class="fb">
+      <div class="card dash">
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">오늘은 발주하는 날이 아닙니다</div>
+        <div class="sub">다음 발주는 <b>9월 2일 (수)</b> A베이커리입니다.</div>
+      </div>
+      <div class="hr"></div>
+      <div class="sub" style="margin-bottom:6px">오늘 기록</div>
+      <div class="card">
+        <div class="kv"><span>판 것</span><b>712,400원</b></div>
+        <div class="kv"><span>남은 돈</span><b>352,180원</b></div>
+        <div class="kv" style="border-bottom:0"><span>수익률</span><b>49.4%</b></div>
+      </div>
+      <div class="card">
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px">오늘 2,400원어치를 버렸습니다</div>
+        <div class="kv"><span>크로플</span><span>1개 · 1,800원</span></div>
+        <div class="kv" style="border-bottom:0"><span>딸기</span><span>1/4팩 · 600원</span></div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px">내일 구울 것</div>
+        <div class="kv" style="border-bottom:0"><span>바스크치즈케이크</span><b>1판</b></div>
+      </div>
+    </div>
+    <div class="ff"><div class="btn">홈으로</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-08 오늘 할 일</h2><div class="st">발주 없는 날</div>
+    <dl>
+      <dt>언제</dt><dd>오늘 요일이 어느 품목의 납품 요일에도 해당하지 않는다.</dd>
+      <dt>왜 이 화면이 필요한가</dt><dd>매일 입력하는데 얻는 게 없는 날이 이어지면 그만둔다. <b>오늘 얼마 팔고 얼마 남았는지가 입력의 대가다.</b></dd>
+      <dt>발주가 없어도 주방은 있다</dt><dd>굽는 것은 매일 할 수 있다. 발주 요일이 아니어도 <b>내일 구울 양</b>은 그대로 보여준다.</dd>
+      <dt>표시값</dt><dd>다음 발주일 · 오늘 매출과 남은 돈과 수익률 · 오늘 버린 내역 · 내일 구울 것</dd>
+      <dt>문구 규칙</dt><dd>"발주 없음"으로 끝내지 않고 다음 발주일을 알려 준다. 버린 것을 두고 사장을 탓하는 문구를 쓰지 않는다.</dd>
+      <dt>다음 화면</dt><dd>LZ-01</dd>
+    </dl>
+    <div class="src">근거 — 기획서 4장 발주 없는 날의 보상 · 14장 R1</div>
+  </div>
+</section>
+
+
+<!-- 13 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 목록</span><span>크로플</span><span class="badge">A베이커리</span></div>
+    <div class="fb">
+      <div style="text-align:center;padding:8px 0 16px">
+        <div class="sub">이만큼 시키세요</div>
+        <div><span class="xl">12</span><span class="sub" style="font-size:14px">개</span></div>
+        <div class="sub">6개 단위 · 2박스</div>
+      </div>
+      <div class="sub" style="margin-bottom:4px">어떻게 나온 숫자인가요</div>
+      <div class="step"><span class="l">7일 평균 나간 양</span><span class="v">13개</span></div>
+      <div class="step"><span class="l">수요일 품절 — 그날 빼고 계산</span><span class="v">13개</span></div>
+      <div class="step"><span class="l">주말이라 더 나감</span><span class="v">+3개</span></div>
+      <div class="step"><span class="l">지금 남은 것 빼기</span><span class="v">−2개</span></div>
+      <div class="step"><span class="l">6개 단위로 맞추기</span><span class="v">12개</span></div>
+      <div class="hr"></div>
+      <div class="sub" style="margin-bottom:8px">몇 개 시킬까요</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="pill" style="width:36px;height:36px">−</div>
+        <div class="inp" style="flex:1;padding:10px;font-size:16px;font-weight:700">14</div>
+        <div class="pill" style="width:36px;height:36px">+</div>
+      </div>
+      <div class="warn" style="margin-top:9px">
+        <b>A베이커리는 6개씩 묶어서 주문합니다.</b><br>
+        <span class="sub">14개는 주문이 안 될 수 있습니다.</span>
+        <div style="display:flex;gap:6px;margin-top:8px"><span class="btn sm" style="flex:1">12개 (2박스)</span><span class="btn sm" style="flex:1">18개 (3박스)</span></div>
+      </div>
+    </div>
+    <div class="ff"><div class="btn">목록으로</div><div class="btn pri">14개로 반영</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-09 추천 상세</h2><div class="st base">기본 · 단위 경고 포함</div>
+    <dl>
+      <dt>계산 과정 표시 규칙</dt><dd>· 추천 로직과 같은 순서로 쓴다<br>· <b>값이 바뀌지 않는 단계는 표시하지 않는다.</b> 0이 적힌 줄은 아무것도 주지 않는다<br>· 계산 용어를 사장의 말로 바꾼다 — "현재 재고 차감" → <b>"지금 남은 것 빼기"</b></dd>
+      <dt>근거와 계산값 일치 검사</dt><dd>문장의 숫자와 계산값이 다르면 근거를 표시하지 않는다. 틀린 근거로 맞는 수량을 정당화하게 두지 않는다.</dd>
+      <dt>조정을 막지 않는다</dt><dd>내일 행사·단체 주문은 앱이 모른다. 최소 단위 배수가 아니면 <b>가까운 배수 두 개를 제시하되</b> 그대로 진행할 수 있게 둔다. 자동으로 고치면 사장이 넣은 값과 저장된 값이 달라진다.</dd>
+      <dt>저장 규칙</dt><dd>제안 수량과 확정 수량을 <b>둘 다</b> 저장한다.</dd>
+      <dt>다음 화면</dt><dd>LZ-08</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-08 · 9장 6단계 · 4장 W1 필수 확인</div>
+  </div>
+</section>
+
+
+<!-- 14 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span>확정 완료</span><span class="badge">8월 30일</span></div>
+    <div class="fb">
+      <div style="font-size:17px;font-weight:700;margin-bottom:14px">오늘 할 일이 정해졌습니다</div>
+      <div class="card soft">
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px">주방</div>
+        <div class="kv" style="border-bottom:0"><span>바스크치즈케이크</span><b>내일 2판 (16조각)</b></div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px">A베이커리 <span class="sub">· 마감 15:00</span></div>
+        <div class="kv" style="border-bottom:0"><span>크로플</span><b>12개 (2박스)</b></div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px">B유통 <span class="sub">· 마감 16:00</span></div>
+        <div class="kv"><span>우유 1L</span><b>12개 (1박스)</b></div>
+        <div class="kv" style="border-bottom:0"><span>크림치즈 1kg</span><b>1개</b></div>
+      </div>
+      <div class="warn"><b>실제 발주는 직접 해주세요.</b><br><span class="sub">전화나 메신저로 거래처에 주문하시면 됩니다.</span></div>
+      <div class="btn sm" style="margin:10px 0">발주 내역 복사</div>
+      <div class="hr"></div>
+      <div class="card dash">
+        <span class="badge">내일까지 쓰면 좋아요</span>
+        <div style="font-size:13px;font-weight:700;margin:9px 0 5px">생크림 2통 · 8,400원</div>
+        <div class="sub">내일 크림라떼를 하루 메뉴로 올리면 한 통이 나갑니다.<br>남은 건 스콘에 곁들여 세트로 묶어 보세요.</div>
+        <div class="sub" style="margin-top:8px;padding-top:7px;border-top:1px solid #eee">재료 상태는 직접 확인해 주세요.</div>
+      </div>
+    </div>
+    <div class="ff"><div class="btn">발주 내역 복사</div><div class="btn pri">홈으로</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-10 확정 완료</h2><div class="st base">기본</div>
+    <dl>
+      <dt>거래처별로 묶는 이유</dt><dd>사장은 품목이 아니라 <b>거래처 단위로 전화</b>한다. 화면 순서를 실제 행동 순서에 맞춘다. 주방은 맨 위 — 내일 아침 가장 먼저 할 일이다.</dd>
+      <dt>"직접 해주세요"가 필수인 이유</dt><dd>확정 버튼을 자동 발주로 오해하면 그날 발주가 통째로 빠진다.</dd>
+      <dt>소진 제안 (우선순위 S)</dt><dd>· 임박 품목이 있을 때만 표시<br>· <b>기한이 지난 품목은 화면에 올리기 전 코드가 제외</b><br>· 금액을 함께 적어 살릴 값어치를 보여준다<br>· <b>재료 상태는 직접 확인해 주세요</b>를 고정 표시. AI는 상태를 알 수 없다<br>· 임박 품목이 없으면 카드를 아예 그리지 않고 AI도 호출하지 않는다</dd>
+      <dt>결과 확인 버튼을 두지 않는 이유</dt><dd>확정 직후에 볼 수 있는 건 어제 결과뿐이고, 이 시점의 사장은 앱을 닫으려는 상태다. 진입점은 다음 날 홈 하나로 유지한다.</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-12 · 14장 R11</div>
+  </div>
+</section>
+
+
+<!-- 15 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 홈</span><span>결과 확인</span><span class="badge">8월 31일</span></div>
+    <div class="fb">
+      <div class="tabs"><div class="on">어제</div><div>버린 것</div><div>수익</div></div>
+      <table class="tbl">
+        <tr><th>품목</th><th>추천</th><th>나감</th><th>남음</th><th>버림</th></tr>
+        <tr><td>크로플</td><td>18</td><td>16</td><td>2</td><td>0</td></tr>
+        <tr><td>바스크치즈</td><td>2판</td><td>16조각</td><td>0</td><td>0</td></tr>
+        <tr><td>우유 1L</td><td>12</td><td>11.1</td><td>4</td><td>1/4통</td></tr>
+        <tr><td>크림치즈</td><td>1kg</td><td>1.0kg</td><td>1.2</td><td>0</td></tr>
+      </table>
+      <div class="warn" style="margin-top:12px"><b>바스크치즈케이크가 다 팔렸습니다</b> (18:40)<br><span class="sub">더 팔릴 수 있었습니다. 내일 구울 양에 반영했습니다.</span></div>
+      <div class="hr"></div>
+      <div class="card">
+        <div class="sub" style="margin-bottom:6px">어제 하루</div>
+        <div class="kv"><span>버린 금액</span><b>2,400원</b></div>
+        <div class="kv" style="border-bottom:0"><span>품절</span><span>1건</span></div>
+      </div>
+    </div>
+    <div class="ff"><div class="btn">홈으로</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-11 결과 확인</h2><div class="st base">어제</div>
+    <dl>
+      <dt>"판매"가 아니라 "나감"인 이유</dt><dd>이 값은 소모량이다. 팔린 것과 시식·서비스가 섞여 있어 판매라고 쓰면 틀린 말이 된다.</dd>
+      <dt>표를 쓰는 이유</dt><dd>추천·나감·남음·버림을 <b>같은 행에서 비교</b>해야 어디가 틀렸는지 보인다.</dd>
+      <dt>직접 만드는 품목</dt><dd>추천이 개수가 아니라 <b>판 수</b>이므로 그대로 적고, 나간 양은 조각으로 적는다. 단위를 억지로 맞추지 않는다.</dd>
+      <dt>표시하지 않는 것</dt><dd>"어제 추천은 대체로 맞았습니다" 같은 <b>평가 문구를 넣지 않는다.</b> 앱이 자기 성적을 매기는 자리가 아니다.</dd>
+      <dt>품절을 따로 강조하는 이유</dt><dd>남은 것은 눈에 보이지만 <b>못 판 것은 보이지 않는다.</b> 품절을 표에만 두면 폐기만 신경 쓰게 되고 그 결과가 R13이다.</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-09 · 14장 R13·R15</div>
+  </div>
+</section>
+
+
+<!-- 16 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 홈</span><span>결과 확인</span><span class="badge">8/25–8/31</span></div>
+    <div class="fb">
+      <div class="tabs"><div>어제</div><div class="on">버린 것</div><div>수익</div></div>
+      <div class="card">
+        <div class="sub" style="margin-bottom:4px">이번 주 버린 금액</div>
+        <div><span class="big">14,200</span><span class="sub">원</span></div>
+        <div class="sub" style="margin-top:6px">지난주 21,600원 → <b>7,400원 줄었습니다</b></div>
+        <div class="sub">매출의 <b>0.7%</b> (지난주 1.1%)</div>
+      </div>
+      <div class="card">
+        <div class="sub" style="margin-bottom:6px">품절</div>
+        <div class="kv"><span>이번 주</span><b>2일 / 7일</b></div>
+        <div class="kv" style="border-bottom:0"><span>지난주</span><span>2일 / 7일</span></div>
+        <div class="warn" style="margin-top:9px">품절이 늘지 않았습니다. 버리는 양만 줄었습니다.</div>
+      </div>
+      <div class="card">
+        <div class="sub" style="margin-bottom:6px">무엇을 버렸나</div>
+        <div class="kv"><span>크로플</span><span>8개 · 14,400원</span></div>
+        <div class="kv"><span>생크림</span><span>2통 · 8,400원</span></div>
+        <div class="kv" style="border-bottom:0"><span>바스크치즈</span><span>3조각 · 7,923원</span></div>
+      </div>
+    </div>
+    <div class="ff"><div class="btn">홈으로</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-11 결과 확인</h2><div class="st">버린 것</div>
+    <dl>
+      <dt>손실률을 함께 쓰는 이유</dt><dd>금액만 보면 매출이 늘어도 폐기가 늘어난 것처럼 보인다. <b>매출 대비 비율</b>을 나란히 두면 실제로 나아졌는지 보인다. 업계 목표는 3% 이내다.</dd>
+      <dt>품절을 폐기 바로 아래 두는 이유</dt><dd>폐기가 줄고 품절이 늘면 <b>실패</b>다. 두 숫자를 반드시 붙여 놓고, 품절이 늘지 않았을 때만 성과로 말한다. 품절이 늘었다면 그 사실을 먼저 쓴다.</dd>
+      <dt>품목별 내역</dt><dd>무엇을 버렸는지 금액 순으로 보여준다. 어디를 손봐야 하는지가 여기서 나온다.</dd>
+      <dt>표시하지 않는 것</dt><dd>막대 그래프. 금액과 차액이 이미 적혀 있고, 눈금 없는 막대는 오해를 만든다.</dd>
+    </dl>
+    <div class="src">근거 — 기획서 1장 폐기율 3% · 10장 · 14장 R6·R13</div>
+  </div>
+</section>
+
+
+<!-- 17 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 홈</span><span>결과 확인</span><span class="badge">8월 30일</span></div>
+    <div class="fb">
+      <div class="tabs"><div>어제</div><div>버린 것</div><div class="on">수익</div></div>
+      <div class="card" style="padding:8px 10px;margin-bottom:6px">
+        <div class="sub">오늘 남은 돈</div>
+        <div><span class="big">444,466</span><span class="sub">원</span></div>
+        <div class="sub">수익률 <b>52.9%</b> · 손실률 <b>0.0%</b></div>
+      </div>
+      <table class="tbl">
+        <tr><th>항목</th><th>금액</th><th>매출 대비</th></tr>
+        <tr><td><b>판 것</b></td><td><b>839,900원</b></td><td>100%</td></tr>
+        <tr><td>재료값</td><td>−131,292원</td><td>15.6%</td></tr>
+        <tr><td>인건비 8시간</td><td>−84,000원</td><td>10.0%</td></tr>
+        <tr><td>버린 것</td><td>−0원</td><td>0.0%</td></tr>
+        <tr><td>카드 수수료<div class="sub">카드 85% × 2.2%</div></td><td>−15,706원</td><td>1.9%</td></tr>
+        <tr><td>고정비 (하루치)</td><td>−95,962원</td><td>11.4%</td></tr>
+        <tr><td>부가세<div class="sub">일반과세</div></td><td>−68,474원</td><td>8.2%</td></tr>
+        <tr><td><b>남은 것</b></td><td><b>444,466원</b></td><td><b>52.9%</b></td></tr>
+      </table>
+      <style>.page:nth-of-type(18) .tbl td{padding:4px 2px}</style>
+      <div class="btn sm" style="margin-top:9px">매장 설정 고치기</div>
+      <div class="hr" style="margin:8px 0"></div>
+      <div class="sub" style="margin-bottom:5px">메뉴별 — 인건비·고정비·세금까지 다 뺀 순이익</div>
+      <table class="tbl">
+        <tr><th>메뉴</th><th>판 것</th><th>남는 것</th><th>수익률</th></tr>
+        <tr><td>크림라떼 18</td><td>117,000</td><td>67,514</td><td><b>58%</b></td></tr>
+        <tr><td>아메리카노 63</td><td>283,500</td><td>162,590</td><td><b>57%</b></td></tr>
+        <tr><td>딸기라떼 42</td><td>252,000</td><td>133,268</td><td><b>53%</b></td></tr>
+        <tr><td>바스크치즈 7 <span class="sub">직접</span></td><td>45,500</td><td>23,420</td><td><b>51%</b></td></tr>
+        <tr><td>초코쿠키 12</td><td>30,000</td><td>9,765</td><td><b>33%</b></td></tr>
+        <tr><td>크로플 16</td><td>62,400</td><td>13,976</td><td><b>22%</b></td></tr>
+        <tr><td class="mut">재료 모르는 메뉴 몫</td><td class="mut">49,500</td><td class="mut">33,933</td><td class="mut">—</td></tr>
+        <tr><td><b>합계</b></td><td><b>839,900</b></td><td><b>444,466</b></td><td><b>53%</b></td></tr>
+      </table>
+    </div>
+    <div class="ff"><div class="btn">홈으로</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-11 결과 확인</h2><div class="st">수익</div>
+    <dl>
+      <dt>목적</dt><dd>매출에서 <b>나갈 돈을 전부</b> 빼고 실제로 얼마 남는지 보여준다. 이 화면이 사장이 돈을 낼지 정하는 근거다.</dd>
+      <dt>빼는 항목</dt><dd>재료값 · 인건비(시급 × 근무시간) · 버린 것 · 카드 수수료(카드 비중에만) · 고정비 하루치 · 부가세. <b>빠뜨리는 항목이 있으면 이 숫자는 못 쓴다.</b></dd>
+      <dt>합이 맞아야 한다</dt><dd>메뉴별 순이익을 더하면 총계와 같아야 한다. 레시피를 모르는 메뉴는 총계 매출에는 들어가고 메뉴별에서는 빠지므로 <b>그 차액을 별도 행으로 표시</b>한다.</dd>
+      <dt>매출 대비 열</dt><dd>금액만 보면 크고 작음을 판단할 수 없다. 비율이 있어야 "고정비가 매출의 22%"처럼 읽힌다.</dd>
+      <dt>메뉴별 정렬</dt><dd>수익률 높은 순. 베이커리가 아래에 몰리는 게 정상이며, 그 사실을 보는 것이 이 표의 목적이다.</dd>
+      <dt>재료 모름 처리</dt><dd>레시피가 없는 메뉴는 <b>매출에는 들어가지만 원가가 빠져 수익률이 실제보다 높게 나온다.</b> 이 사실을 숨기지 말고 금액과 함께 알리고, 바로 등록하러 갈 버튼을 준다.</dd>
+      <dt>부가세</dt><dd>(매출 − 매입) × 10%로 어림한다. 실제 신고액과 다르다는 점을 고정비 화면에 적는다.</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-10 · 10장 품목별 이익</div>
+  </div>
+</section>
+
+
+<!-- 18 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 수익</span><span>딸기라떼</span><span class="badge">42개</span></div>
+    <div class="fb">
+      <div style="margin-bottom:8px">
+        <span class="chip">크로플</span><span class="chip">바스크치즈</span><span class="chip">초코쿠키</span>
+        <span class="chip on">딸기라떼</span><span class="chip">크림라떼</span><span class="chip">아메리카노</span>
+      </div>
+      <div style="text-align:center;padding:12px 0 14px">
+        <div class="sub">한 개 팔면 남는 돈</div>
+        <div><span class="xl">3,173</span><span class="sub" style="font-size:14px">원</span></div>
+        <div class="sub">수익률 <b>52.9%</b></div>
+      </div>
+      <table class="tbl">
+        <tr><th>항목</th><th>한 개</th><th>42개</th></tr>
+        <tr><td><b>판매가</b></td><td><b>6,000원</b></td><td><b>252,000원</b></td></tr>
+        <tr><td>재료값</td><td>−940원</td><td>−39,480원</td></tr>
+        <tr><td>인건비 몫</td><td>−600원</td><td>−25,203원</td></tr>
+        <tr><td>버린 것 몫</td><td>−0원</td><td>−0원</td></tr>
+        <tr><td>카드 수수료</td><td>−112원</td><td>−4,712원</td></tr>
+        <tr><td>고정비 몫</td><td>−686원</td><td>−28,792원</td></tr>
+        <tr><td>부가세</td><td>−489원</td><td>−20,545원</td></tr>
+        <tr><td><b>남는 것</b></td><td><b>3,173원</b></td><td><b>133,268원</b></td></tr>
+      </table>
+      <div class="warn" style="margin-top:12px">
+        <b>인건비 몫과 고정비 몫</b>은 하루 인건비·임대료·전기·수도를 <b>매출 비중</b>으로 나눈 값입니다.
+        이 메뉴가 오늘 매출의 30%라 그만큼 붙였습니다.
+      </div>
+    </div>
+    <div class="ff"><div class="btn">돌아가기</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-12 메뉴별 뜯어보기</h2><div class="st base">기본</div>
+    <dl>
+      <dt>목적</dt><dd>메뉴 하나가 <b>한 개 팔릴 때 실제로 얼마 남는지</b>를 끝까지 보여준다.</dd>
+      <dt>왜 한 개 기준을 크게 두는가</dt><dd>사장이 판단하는 단위는 총액이 아니라 한 잔이다. "이 메뉴 하나 팔면 3,077원 남는다"가 가격을 올릴지 뺄지의 근거가 된다.</dd>
+      <dt>고정비 배부 기준</dt><dd><b>매출 비중.</b> 가장 흔하고 설명하기 쉽다. 화면에 기준을 반드시 적는다 — 안 적으면 "왜 이 메뉴에 1,345원이나 붙지"라는 의심이 남는다.</dd>
+      <dt>다른 배부 기준</dt><dd>판매 잔 수나 제조 시간으로 나눌 수도 있다. v1은 매출 비중 하나만 쓰고, 파일럿에서 사장이 납득하는지 본다.</dd>
+      <dt>메뉴 전환</dt><dd>상단 칩으로 바꾼다. 화면을 나가지 않고 여러 메뉴를 견줄 수 있어야 한다.</dd>
+      <dt>주의</dt><dd>메뉴별 순이익의 합은 하루 순이익과 <b>다를 수 있다.</b> 레시피를 모르는 메뉴가 총계에는 들어가지만 메뉴별 표에서는 빠지기 때문이다. 이 차이를 화면에 밝힌다.</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-10 · 10장</div>
+  </div>
+</section>
+
+
+<!-- 19 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 수익</span><span>매장 설정</span><span class="badge"></span></div>
+    <div class="fb">
+      <div class="sub" style="margin-bottom:5px">한 달에 나가는 돈</div>
+      <div class="lst">
+        <div class="li"><span class="nm">임대료</span><span class="inp" style="min-width:88px;text-align:right">1,800,000</span></div>
+        <div class="li"><span class="nm">전기</span><span class="inp" style="min-width:88px;text-align:right">320,000</span></div>
+        <div class="li"><span class="nm">수도 · 가스</span><span class="inp" style="min-width:88px;text-align:right">145,000</span></div>
+        <div class="li"><span class="nm">통신·인터넷</span><span class="inp" style="min-width:88px;text-align:right">50,000</span></div>
+        <div class="li"><span class="nm">소모품·기타</span><span class="inp" style="min-width:88px;text-align:right">180,000</span></div>
+      </div>
+      <div class="card soft" style="margin-top:8px">
+        <div class="kv"><span>한 달 고정비</span><b>2,495,000원</b></div>
+        <div class="kv" style="border-bottom:0"><span>영업일 26일로 나누면</span><b>하루 95,962원</b></div>
+      </div>
+      <div class="hr" style="margin:8px 0"></div>
+      <div class="sub" style="margin-bottom:5px">인건비 — 시급으로만 계산합니다</div>
+      <div class="lst">
+        <div class="li"><span class="nm">시급</span><span class="inp" style="min-width:88px;text-align:right">10,500</span></div>
+        <div class="li"><span class="nm">직원 하루 근무</span><span class="inp" style="min-width:88px;text-align:right">8시간</span></div>
+        <div class="li" style="display:block">
+          <div style="display:flex"><span class="nm">사장님 하루 근무</span><span class="inp" style="min-width:88px;text-align:right">10시간</span></div>
+          <div style="margin-top:7px"><span class="chip on">빼고 보기</span><span class="chip">넣고 보기</span></div>
+        </div>
+      </div>
+      <div class="card soft" style="margin-top:8px"><div class="kv" style="border-bottom:0"><span>하루 인건비 8시간</span><b>84,000원</b></div></div>
+      <div class="warn" style="margin-top:8px"><b>만드는 시간은 따로 안 뺍니다.</b> 케이크 굽는 70분도 이 근무시간 안에 있습니다.</div>
+      <div class="hr" style="margin:8px 0"></div>
+      <div class="sub" style="margin-bottom:5px">부가세 <span style="color:#999">· 우유·계란·과일은 면세</span></div>
+      <div><span class="chip on">일반과세</span><span class="chip">간이과세</span></div>
+      <div class="hr" style="margin:8px 0"></div>
+      <div class="sub" style="margin-bottom:5px">카드 비중</div>
+      <div><span class="chip">70%</span><span class="chip">80%</span><span class="chip on">85%</span><span class="chip">90%</span><span class="chip">95%</span></div>
+    </div>
+    <div class="ff"><div class="btn pri">저장</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-13 매장 설정</h2><div class="st base">기본</div>
+    <dl>
+      <dt>목적</dt><dd>수익률 계산에 쓸 값을 받는다. 고정비·인건비·과세유형·카드비중 넷이다. <b>한 번만 넣으면 매일 자동으로 반영된다.</b></dd>
+      <dt>인건비를 고정비에서 뺀 이유</dt><dd>고정비에 인건비를 두고 원가에도 만드는 인건비를 넣으면 <b>같은 돈을 두 번 뺀다.</b> 인건비는 <b>시급 × 근무시간</b> 하나로만 계산한다. 케이크 굽는 70분도 그 근무시간 안에 있다.</dd>
+      <dt>사장 시간을 고르게 하는 이유</dt><dd>본인 시간을 비용으로 볼지는 사람마다 다르고, 넣고 뺄 때 수익률이 <b>52.9% → 40.4%</b>로 크게 바뀐다. 어느 한쪽으로 정해 버리면 다른 쪽 사장은 이 숫자를 안 믿는다.</dd>
+      <dt>과세 유형</dt><dd>일반과세는 매출세액 − 매입세액, 간이과세는 매출 × 15% × 10%. 수익률이 52.9% ↔ 59.6%로 달라진다. <b>면세 품목(우유·계란·과일)은 매입세액 공제에서 뺀다.</b></dd>
+      <dt>카드 비중</dt><dd>현금·간편결제에는 카드 수수료가 붙지 않는다. 매출 전액에 2.2%를 붙이면 과다 계산이다.</dd>
+      <dt>언제 다시 오나</dt><dd>처음 1회 + 값이 바뀔 때. 매일 흐름에는 넣지 않는다.</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-13 · 9-1장 손익 계산 · 13장 데이터 구조</div>
+  </div>
+</section>
+
+
+<!-- 20 -->
+<section class="page">
+  <div class="frame">
+    <div class="fh"><span class="back">← 홈</span><span>재고 맞추기</span><span class="badge">주 1회</span></div>
+    <div class="fb">
+      <div class="warn" style="margin-bottom:12px"><b>앱이 계산한 재고입니다. 맞으면 그냥 넘기세요.</b><br>다른 것만 고쳐 주시면 다음 주 계산이 정확해집니다.</div>
+      <div class="lst">
+        <div class="li"><span class="nm">크로플<div class="sub">앱 계산 14</div></span><span class="stp"><span class="pill">−</span><b>14</b><span class="pill">+</span></span></div>
+        <div class="li"><span class="nm">바스크치즈케이크<div class="sub">앱 계산 8</div></span><span class="stp"><span class="pill">−</span><b>8</b><span class="pill">+</span></span></div>
+        <div class="li"><span class="nm">초코쿠키<div class="sub">앱 계산 21</div></span><span class="stp"><span class="pill">−</span><b>20</b><span class="pill">+</span></span></div>
+        <div class="li"><span class="nm">우유 1L<div class="sub">앱 계산 6</div></span><span class="stp"><span class="pill">−</span><b>5</b><span class="pill">+</span></span></div>
+        <div class="li"><span class="nm">생크림 500ml<div class="sub">앱 계산 2</div></span><span class="stp"><span class="pill">−</span><b>2</b><span class="pill">+</span></span></div>
+        <div class="li"><span class="nm">크림치즈 1kg<div class="sub">앱 계산 2</div></span><span class="stp"><span class="pill">−</span><b>2</b><span class="pill">+</span></span></div>
+      </div>
+      <div class="card soft" style="margin-top:12px">
+        <div class="kv"><span>차이 나는 품목</span><b>2종</b></div>
+        <div class="kv" style="border-bottom:0"><span>차이 금액</span><b>−2,800원</b></div>
+      </div>
+      <div class="sub" style="margin-top:10px">시식·서비스로 나간 양입니다. 매주 크게 차이 나는 품목이 있으면 레시피를 다시 확인해 보세요.</div>
+    </div>
+    <div class="ff"><div class="btn pri">맞습니다</div></div>
+  </div>
+  <div class="notes">
+    <h2>LZ-14 재고 맞추기</h2><div class="st base">기본</div>
+    <dl>
+      <dt>목적</dt><dd>계산 재고와 실제 재고의 차이를 맞춘다. <b>매일이 아니라 주 1회.</b></dd>
+      <dt>세는 게 아니라 확인이다</dt><dd>빈 칸을 주고 채우게 하지 않고 <b>앱이 계산한 값을 미리 채워</b> 둔다. 대부분 그대로 넘어가고, 다른 것만 고친다.</dd>
+      <dt>차이를 보여주는 이유</dt><dd>차이는 시식·증정·미기록 폐기다. 금액으로 보여주면 사장이 "생각보다 새는 게 많네"를 알게 된다. 이것도 손실이다.</dd>
+      <dt>레시피 점검 신호</dt><dd>특정 품목에서 매주 같은 방향으로 차이가 크면 <b>레시피가 실제와 다르다는 뜻</b>이다. 그때 레시피를 다시 확인하라고 안내한다.</dd>
+      <dt>주기</dt><dd>매주 같은 요일. 매장이 가장 한가한 날로 고를 수 있게 한다.</dd>
+      <dt>다음 화면</dt><dd>LZ-01</dd>
+    </dl>
+    <div class="src">근거 — 기획서 8장 F-06 · 9장 0-1단계 · 14장 R15·R18</div>
+  </div>
+</section>
+
+</body>
+</html>
