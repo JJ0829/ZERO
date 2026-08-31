@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --show-toplevel 2>/dev/null || echo 로스제로)\" && git pull --rebase --autostash 2>&1 | tail -3",
+            "timeout": 30,
+            "statusMessage": "다른 노트북 작업 받아오는 중..."
+          }
+        ]
+      }
+    ]
+  }
+}
