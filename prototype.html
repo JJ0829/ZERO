@@ -8,16 +8,12 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   body{margin:0;background:#eceff0;color:var(--ink);font-family:"Malgun Gothic","맑은 고딕",system-ui,sans-serif;}
   .wrap{display:flex;gap:24px;padding:24px;align-items:flex-start;justify-content:center;flex-wrap:wrap;}
-
-  /* 폰 */
-  .phone{width:360px;height:800px;background:#fff;border:1px solid #c4c4c4;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 28px rgba(0,0,0,.13);flex:none;}
+  .phone{width:360px;height:800px;background:#fff;border:1px solid #c4c4c4;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 28px rgba(0,0,0,.13);flex:none;position:relative;}
   .hd{height:48px;flex:none;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:14px;font-weight:700;}
   .hd .bk{font-weight:400;color:var(--sub);font-size:12px;cursor:pointer;}
   .bd{flex:1;overflow-y:auto;padding:16px;}
   .ft{flex:none;border-top:1px solid var(--line);padding:12px 16px;display:flex;gap:8px;}
   .ft>*{flex:1;}
-
-  /* 부품 */
   .btn{border:1px solid var(--line);border-radius:6px;padding:13px 10px;text-align:center;font-size:13px;background:#fff;cursor:pointer;user-select:none;}
   .btn:active{background:#f2f2f2;}
   .btn.pri{background:var(--acc);color:#fff;border-color:var(--acc);font-weight:700;}
@@ -26,6 +22,8 @@
   .card{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;background:#fff;}
   .card.soft{background:var(--soft);}
   .card.dash{border-style:dashed;}
+  .card.tap{cursor:pointer;}
+  .card.tap:active{background:#f7f7f7;}
   .t1{font-size:18px;font-weight:700;line-height:1.4;}
   .t2{font-size:15px;font-weight:700;}
   .sub{color:var(--sub);font-size:12px;line-height:1.6;}
@@ -49,6 +47,7 @@
   .stp b{min-width:34px;text-align:center;font-size:16px;}
   .pill{border:1px solid var(--line);border-radius:6px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;user-select:none;}
   .pill:active{background:#f0f0f0;}
+  .pill.sm{width:28px;height:28px;font-size:14px;}
   table.tb{width:100%;border-collapse:collapse;font-size:12px;}
   table.tb th{font-size:11px;color:var(--sub);font-weight:400;text-align:right;padding:6px 3px;border-bottom:1px solid var(--line);}
   table.tb th:first-child{text-align:left;}
@@ -65,695 +64,792 @@
   .hr{height:1px;background:#eee;margin:14px 0;}
   .chip{display:inline-block;border:1px solid var(--line);border-radius:14px;padding:5px 11px;font-size:12px;margin:0 5px 5px 0;cursor:pointer;}
   .chip.on{background:var(--acc);color:#fff;border-color:var(--acc);}
-
-  /* 사이드 */
-  .side{width:320px;flex:none;}
+  .grp{border:1px solid var(--line);border-radius:10px;padding:12px 12px 6px;margin-bottom:10px;}
+  .grp>.gh{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:8px;border-bottom:1px solid #eee;}
+  .toast{position:absolute;left:16px;right:16px;bottom:78px;background:rgba(26,26,26,.94);color:#fff;font-size:12px;padding:11px 14px;border-radius:8px;opacity:0;transition:opacity .18s;pointer-events:none;line-height:1.5;}
+  .toast.on{opacity:1;}
+  .side{width:340px;flex:none;}
   .side h1{font-size:19px;margin:0 0 4px;}
   .side .lead{font-size:12px;color:var(--sub);line-height:1.7;margin-bottom:16px;}
-  .side h2{font-size:12px;margin:16px 0 7px;color:var(--sub);font-weight:700;letter-spacing:.4px;}
   .nav{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
   .nav a{display:block;padding:9px 13px;font-size:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;color:var(--ink);text-decoration:none;}
   .nav a:last-child{border-bottom:0;}
   .nav a:hover{background:#f7f7f7;}
   .nav a.on{background:var(--ink);color:#fff;font-weight:700;}
-  .nav .grp{padding:7px 13px;font-size:10px;color:var(--sub);background:#f7f7f7;border-bottom:1px solid #f0f0f0;letter-spacing:.4px;}
+  .nav .ghd{padding:7px 13px;font-size:10px;color:var(--sub);background:#f7f7f7;border-bottom:1px solid #f0f0f0;letter-spacing:.4px;}
   .expl{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;font-size:12px;line-height:1.7;margin-top:14px;}
   .expl b{display:block;margin-bottom:5px;font-size:13px;}
+  .reset{margin-top:10px;text-align:center;font-size:11px;color:var(--sub);cursor:pointer;text-decoration:underline;}
   @media (max-width:760px){.wrap{padding:12px}.side{width:360px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <div class="phone">
     <div class="hd"><span id="hL" class="bk"></span><span id="hC"></span><span id="hR" class="badge"></span></div>
     <div class="bd" id="bd"></div>
     <div class="ft" id="ft"></div>
+    <div class="toast" id="toast"></div>
   </div>
-
   <div class="side">
     <h1>로스제로 시제품</h1>
     <div class="lead">
-      실제로 눌러 보는 화면입니다. 숫자는 서로 연결되어 있어서, 버린 수량을 바꾸면 이익과 발주 추천이 같이 바뀝니다.<br>
-      가정 — 테스트카페, 품목 6종, 오늘은 8월 30일(일) A베이커리·B유통 납품 요일.
+      재료와 사는 단위를 나눠서 다룹니다. 우유는 1L·2.3L 두 가지를 같이 쓰고,
+      레시피는 ml로 세고, 발주와 재고는 통으로 셉니다.<br>
+      기록은 8월 23~29일 7일치, 오늘은 8월 30일(일)입니다.
     </div>
     <div class="nav" id="nav"></div>
     <div class="expl" id="expl"></div>
+    <div class="reset" id="reset">오늘 입력 초기화</div>
   </div>
-
 </div>
 
 <script>
-/* ---------------- 데이터 ---------------- */
-const 원 = n => n.toLocaleString('ko-KR') + '원';
-const unitLabel = v => ({0:'없음', 0.25:'1/4통', 0.5:'반 통', 1:'1통'})[v] ?? v+'통';
+/* ══════════════ 공통 ══════════════ */
+const 원 = n => Math.round(n).toLocaleString('ko-KR') + '원';
+const DOW = ['일','월','화','수','목','금','토'];
+const dow = d => new Date(d+'T00:00:00').getDay();
+const md  = d => `${+d.slice(5,7)}월 ${+d.slice(8,10)}일`;
+const addDays = (d,n)=>{const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);
+  return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`;};
+// 받침 따라 조사 붙이기
+function josa(w,pair){const [a,b]=pair.split('/');const c=String(w).charCodeAt(String(w).length-1);
+  if(c<0xAC00||c>0xD7A3) return w+b; return w+(((c-0xAC00)%28)?a:b);}
 
-// 품목 (A등급)
-const items = {
-  // 사 오는 것 — 매입가가 곧 원가
-  krofl:  {name:'크로플',          kind:'사 옴', buy:1800, unit:6, sup:'A베이커리', stock:2, exp:2},
-  cookie: {name:'초코쿠키',        kind:'사 옴', buy:900,  unit:1, sup:'A베이커리', stock:9, exp:5},
+const TODAY='2026-08-30';
+const HIST=[0,1,2,3,4,5,6].map(i=>addDays(TODAY,i-7));
 
-  // 직접 만드는 것 — 재료값 합계가 원가. batch = 한 판 재료, yield = 한 판에서 나오는 개수
-  basque: {name:'바스크치즈케이크', kind:'직접 만듦', stock:1, exp:3,
+const SUP={ 'A베이커리':{days:[0,2,4,6],deadline:'15:00'},
+            'B유통':{days:[0,4],deadline:'16:00'},
+            'C커피':{days:[0],deadline:'17:00'} };
+
+/* ══════════════ 재료 · 사는 단위 ══════════════
+   재료(mats)  — 레시피가 세는 것. 우유는 ml, 계란은 개
+   사는 단위(skus) — 발주·재고·폐기를 세는 것. 우유 1L 통, 우유 2.3L 통
+   같은 재료를 여러 크기로 살 수 있다.                             */
+const mats = {
+  krofl:  {name:'크로플',           u:'개',   shelf:2,  kind:'사 옴'},
+  cookie: {name:'초코쿠키',         u:'개',   shelf:5,  kind:'사 옴'},
+  basque: {name:'바스크치즈케이크', u:'조각', shelf:3,  kind:'직접 만듦',
            batch:{cheese:500, egg:4, cream:200}, yield:8, mins:70},
-
-  // 원부자재
-  milk:   {name:'우유 1L',      kind:'원부자재', buy:1900,  unit:12, sup:'B유통', stock:4, exp:4, per:1000, u:'ml'},
-  cream:  {name:'생크림 500ml', kind:'원부자재', buy:4200,  unit:1,  sup:'B유통', stock:2, exp:1, per:500,  u:'ml'},
-  berry:  {name:'딸기 1팩',     kind:'원부자재', buy:7000,  unit:1,  sup:'B유통', stock:1, exp:2, per:500,  u:'g'},
-  cheese: {name:'크림치즈 1kg', kind:'원부자재', buy:12000, unit:1,  sup:'B유통', stock:1.2, exp:6, per:1000, u:'g'},
-  egg:    {name:'계란 30구',    kind:'원부자재', buy:9000,  unit:1,  sup:'B유통', stock:0.8, exp:9, per:30,   u:'개'},
-  // 발주 추천 대상은 아니지만(유통기한이 길다) 원가 계산에는 들어간다
-  bean:   {name:'원두 1kg',     kind:'원부자재', buy:28000, unit:2,  sup:'C커피', stock:3, exp:60, per:1000, u:'g'},
+  milk:   {name:'우유',    u:'ml', shelf:4,  kind:'원부자재', taxFree:true},
+  cream:  {name:'생크림',  u:'ml', shelf:1,  kind:'원부자재'},
+  berry:  {name:'딸기',    u:'g',  shelf:2,  kind:'원부자재', taxFree:true},
+  cheese: {name:'크림치즈',u:'g',  shelf:6,  kind:'원부자재'},
+  egg:    {name:'계란',    u:'개', shelf:9,  kind:'원부자재', taxFree:true},
+  bean:   {name:'원두',    u:'g',  shelf:60, kind:'원부자재'},
 };
-// 부가세 면세 품목 — 가공하지 않은 농축수산물
-const TAX_FREE = ['milk','egg','berry'];
-
-// 매장 고정비 (월) — 인건비는 여기 없다. 시급으로 따로 계산한다
-const FIXED = {
-  rent:  {name:'임대료',        v:1800000},
-  elec:  {name:'전기',          v:320000},
-  water: {name:'수도',          v:55000},
-  gas:   {name:'가스',          v:90000},
-  comm:  {name:'통신·인터넷',    v:50000},
-  etc:   {name:'소모품·기타',    v:180000},
+const skus = {
+  krofl:   {mat:'krofl',  name:'크로플',       size:1,    buy:1800,  cu:'개',   unit:6,  box:'박스', sup:'A베이커리', main:true},
+  cookie:  {mat:'cookie', name:'초코쿠키',     size:1,    buy:900,   cu:'개',   unit:1,             sup:'A베이커리', main:true},
+  milk1:   {mat:'milk',   name:'우유 1L',      size:1000, buy:1900,  cu:'통',   unit:12, box:'박스', sup:'B유통',    main:true},
+  milk23:  {mat:'milk',   name:'우유 2.3L',    size:2300, buy:4100,  cu:'통',   unit:6,  box:'박스', sup:'B유통'},
+  cream5:  {mat:'cream',  name:'생크림 500ml', size:500,  buy:4200,  cu:'통',   unit:1,             sup:'B유통',    main:true},
+  cream10: {mat:'cream',  name:'생크림 1L',    size:1000, buy:7800,  cu:'통',   unit:1,             sup:'B유통'},
+  berry:   {mat:'berry',  name:'딸기 500g',    size:500,  buy:7000,  cu:'팩',   unit:1,             sup:'B유통',    main:true},
+  // showBase = 통·개로 세지 않고 재료 단위(g)로 표시한다. ± 는 여전히 1kg 블록씩 움직인다
+  cheese:  {mat:'cheese', name:'크림치즈',     size:1000, buy:12000, cu:'g',    unit:1, showBase:true, sup:'B유통', main:true},
+  egg:     {mat:'egg',    name:'계란 30구',    size:30,   buy:9000,  cu:'판',   unit:1,             sup:'B유통',    main:true},
+  bean:    {mat:'bean',   name:'원두 2kg',     size:2000, buy:56000, cu:'봉지', unit:1,             sup:'C커피',    main:true},
 };
-// 인건비 — 시급 × 일한 시간 하나로만 계산한다 (이중 계산 방지)
-const LABOR = { staffHours:8, ownerHours:10, wage:10500 };
-const OPEN_DAYS = 26;             // 한 달 영업일
-const CARD_FEE = 0.022;           // 카드 수수료율
-const VAT = 0.1;                  // 부가세율
-const SIMPLE_RATE = 0.15;         // 간이과세 음식점 업종별 부가가치율
+// 초기화로 되돌릴 수 있게 원본을 남긴다
+const MAT_SEED=JSON.parse(JSON.stringify(mats)), SKU_SEED=JSON.parse(JSON.stringify(skus));
+function resetItems(){
+  for(const k in mats) delete mats[k];
+  Object.assign(mats, JSON.parse(JSON.stringify(MAT_SEED)));
+  for(const k in skus) delete skus[k];
+  Object.assign(skus, JSON.parse(JSON.stringify(SKU_SEED)));
+}
+const skusOf  = m => Object.keys(skus).filter(s=>skus[s].mat===m);
+const mainSku = m => skusOf(m).find(s=>skus[s].main) || skusOf(m)[0];
+// 직접 만드는 것으로 치려면 한 판 재료와 나오는 개수가 있어야 한다
+const isMade   = m => mats[m].kind==='직접 만듦' && mats[m].batch && Object.keys(mats[m].batch).length && mats[m].yield>0;
+const orderMats = () => Object.keys(mats).filter(m=>!isMade(m) && skusOf(m).length);
+const madeMats  = () => Object.keys(mats).filter(isMade);
+// 재료 1단위(ml·g·개) 값 — 주력 사는 단위 기준
+const unitPrice = m => { const s=skus[mainSku(m)]; return s.buy/s.size; };
+// 사는 단위 수량을 화면에 쓰는 말로 — showBase 면 g·ml로 편다
+const qtyText=(s,q)=>{const sk=skus[s];
+  return sk.showBase ? `${Math.round(q*sk.size)}${mats[sk.mat].u}` : `${q}${sk.cu}`;};
+// 재료 보기 좋게 — 4900 → 4.9L
+function fmt(m,q){
+  const u=mats[m].u;
+  if(u==='ml'||u==='g'){ const big=u==='ml'?'L':'kg';
+    return q>=1000 ? (q/1000).toFixed(Math.round(q)%1000?1:0)+big : Math.round(q)+u; }
+  return (Math.abs(q%1)>0.001?q.toFixed(1):Math.round(q))+u;
+}
 
-// 오늘 POS 판매 (메뉴 → 수량)
-const sales = [
-  {menu:'크로플',        qty:16, price:3900, recipe:{krofl:1}},
-  {menu:'바스크치즈케이크', qty:7,  price:6500, recipe:{basque:1}},   // 직접 구운 것을 조각으로 판다
-  {menu:'초코쿠키',      qty:12, price:2500, recipe:{cookie:1}},
-  {menu:'딸기라떼',      qty:42, price:6000, recipe:{milk:200, berry:40}},
-  {menu:'크림라떼',      qty:18, price:6500, recipe:{milk:150, cream:50}},
-  {menu:'아메리카노',    qty:63, price:4500, recipe:{bean:18}},
-  {menu:'딸기크로플',    qty:9,  price:5500, recipe:null},          // ← 레시피 모름
+const MENU_SEED = {
+  krofl:  {name:'크로플',          price:3900, recipe:{krofl:1}},
+  basque: {name:'바스크치즈케이크', price:6500, recipe:{basque:1}},
+  cookie: {name:'초코쿠키',        price:2500, recipe:{cookie:1}},
+  slatte: {name:'딸기라떼',        price:6000, recipe:{milk:200, berry:40}},
+  clatte: {name:'크림라떼',        price:6500, recipe:{milk:150, cream:50}},
+  ame:    {name:'아메리카노',      price:4500, recipe:{bean:18}},
+  skrofl: {name:'딸기크로플',      price:null, recipe:null},
+};
+const cloneMenus = () => JSON.parse(JSON.stringify(MENU_SEED));
+let menus = cloneMenus();
+
+/* 7일 기록 — 폐기·입고는 사는 단위(sku) 기준 */
+const SEED=[
+  {sales:[15,8,12,40,18,60,9], waste:{krofl:2, cream5:0.5}, baked:{basque:2}},
+  {sales:[10,6, 9,30,13,52,6], waste:{}},
+  {sales:[11,6,10,32,14,55,7], waste:{cookie:1}, baked:{basque:1}},
+  {sales:[ 9,5, 9,28,12,50,6], waste:{}, soldOut:['krofl']},
+  {sales:[11,6,10,33,15,56,7], waste:{milk1:0.25}, baked:{basque:2}},
+  {sales:[13,7,11,38,17,62,8], waste:{krofl:1}},
+  {sales:[17,9,14,45,20,68,10], waste:{krofl:2, cream5:0.5}, baked:{basque:2}},
 ];
+const MK=['krofl','basque','cookie','slatte','clatte','ame','skrofl'];
+const history={};
+HIST.forEach((d,i)=>{const s={};MK.forEach((k,j)=>s[k]=SEED[i].sales[j]);
+  history[d]={sales:s, waste:SEED[i].waste||{}, baked:SEED[i].baked||{}, soldOut:SEED[i].soldOut||[], received:{}};});
+history[HIST[6]].suggested={krofl:24, cookie:12, milk1:12};   // 어제 확정한 발주 (사는 단위)
 
-// 상태
-const S = {
-  screen:'home',
-  uploaded:false,
-  recipeDone:false,
-  newRecipe:{},
-  waste:{krofl:0, basque:0, cookie:0},
-  wasteUnit:{milk:0, cream:0, berry:0, cheese:0, egg:0},   // 0=없음 1=1통 .5=반통 .25=1/4
-  baked:{basque:0},                        // 오늘 구운 판 수
-  received:false,
-  order:{krofl:12, cheese:1, milk:12, bean:2},
-  confirmed:false,
-  detail:'krofl',
-  resTab:'ye',
-  ownerPay:false,
-  plMenu:'딸기라떼',
-  taxType:'normal',      // normal | simple
-  cardRatio:0.85,
-  newPrice:0,            // 새 메뉴 판매가
-};
+// 지난 일요일 실사 — 재료 단위
+const lastCount={date:HIST[6], qty:{krofl:2, basque:8, cookie:9, milk:4000, cream:1000, berry:2000, cheese:1200, egg:24, bean:3000}};
 
-/* ---------------- 계산 ---------------- */
-// 직접 만드는 것의 한 개당 재료 원가 = 한 판 재료값 ÷ 나오는 개수
-function costOf(k){
-  const it = items[k];
-  if(it.kind!=='직접 만듦') return it.buy;
-  return Math.round(batchCost(k) / it.yield);
+const FIXED={rent:1800000, elec:320000, water:55000, gas:90000, comm:50000, etc:180000};
+const FIXED_NAME={rent:'임대료', elec:'전기', water:'수도', gas:'가스', comm:'통신·인터넷', etc:'소모품·기타'};
+const CARD_FEE=0.022, VAT=0.1, SIMPLE_RATE=0.15;
+
+/* ══════════════ 상태 ══════════════ */
+const blank=()=>({
+  screen:'home', uploaded:false, confirmed:false, recvEdit:false,
+  todaySales:{krofl:16, basque:7, cookie:12, slatte:42, clatte:18, ame:63, skrofl:9},
+  todayWaste:{}, todayBaked:{basque:0}, todayRecv:{},
+  newPrice:0, newRecipe:{},
+  order:{}, orderTouched:{}, orderSku:{}, supFilter:null,
+  detail:'krofl', resTab:'ye', plMenu:'slatte', editMenu:'krofl', editItem:'krofl',
+  fixed:{...FIXED}, wage:10500, staffHours:8, ownerHours:10, openDays:26,
+  ownerPay:false, taxType:'normal', cardRatio:0.85,
+  count:{}, stockAdj:{}, ocrCheck:['clatte'],
+});
+let S=blank();
+
+/* ══════════════ 계산 ══════════════ */
+const recipeOf=k=>(k==='skrofl'&&Object.keys(S.newRecipe).length)?S.newRecipe:menus[k].recipe;
+const priceOf =k=>(k==='skrofl'&&S.newPrice)?S.newPrice:menus[k].price;
+const skuFor  =m=>S.orderSku[m]||mainSku(m);
+
+function batchCost(m){let s=0;for(const x in (mats[m].batch||{}))s+=unitPrice(x)*mats[m].batch[x];return Math.round(s);}
+const costOf=m=>isMade(m)?Math.round(batchCost(m)/mats[m].yield):(skusOf(m).length?unitPrice(m):0);
+const makeLabor=m=>isMade(m)?Math.round(S.wage*(mats[m].mins||0)/60/mats[m].yield):0;
+const fullCost=m=>costOf(m)+makeLabor(m);
+
+function menuCost(k){
+  const r=recipeOf(k); if(!r) return null;
+  let mat=0,taxable=0;
+  for(const m in r){ const c=costOf(m)*r[m]; mat+=c; if(!mats[m].taxFree) taxable+=c; }
+  return {mat:Math.round(mat), taxable:Math.round(taxable)};
 }
-function batchCost(k){
-  const it = items[k]; let sum=0;
-  for(const m in it.batch) sum += items[m].buy * it.batch[m] / items[m].per;
-  return Math.round(sum);
+// 사는 단위 기록 → 재료 단위로
+const toBase=obj=>{const o={};for(const s in obj){const k=skus[s].mat;o[k]=(o[k]||0)+obj[s]*skus[s].size;}return o;};
+const wasteBase=day=>toBase(day===TODAY?S.todayWaste:(history[day].waste||{}));
+function recvBase(day){
+  if(day!==TODAY) return toBase(history[day].received||{});
+  return toBase({...(history[HIST[6]].suggested||{}), ...S.todayRecv});
 }
-// 만드는 시간을 시급으로 환산한 값 — 참고용이다.
-// 이 시간은 하루 인건비(시급 × 일한 시간)에 이미 들어 있으므로 손익에서 또 빼지 않는다.
-function makeLabor(k){
-  const it = items[k];
-  if(it.kind!=='직접 만듦') return 0;
-  return Math.round(LABOR.wage * it.mins/60 / it.yield);
-}
-function fullCost(k){ return costOf(k) + makeLabor(k); }   // 원가 화면 비교용
+const bakedOf=day=>day===TODAY?S.todayBaked:(history[day].baked||{});
 
-// 고정비 (인건비 제외)
-function fixedMonth(){ let s=0; for(const k in FIXED) s+=FIXED[k].v; return s; }
-const fixedDay = () => Math.round(fixedMonth()/OPEN_DAYS);
-
-// 인건비 — 하루 일한 시간 × 시급. 만드는 시간도 이 안에 포함된다
-function laborHours(){ return LABOR.staffHours + (S.ownerPay ? LABOR.ownerHours : 0); }
-const laborDay = () => Math.round(laborHours() * LABOR.wage);
-
-function consume(){                       // 오늘 소모량 (품목별)
-  const c = {};
-  for(const k in items) c[k]=0;
-  // 판매로 나간 것
-  sales.forEach(s=>{
-    const r = s.recipe || (s.menu==='딸기크로플' && S.recipeDone ? S.newRecipe : null);
-    if(!r) return;
-    for(const k in r){
-      if(items[k].kind==='원부자재') c[k]+=r[k]*s.qty/items[k].per;   // 용량 → 통 수
-      else c[k]+=r[k]*s.qty;
-    }
-  });
-  // 구우면서 나간 재료
-  for(const k in S.baked){
-    const n = S.baked[k]; if(!n) continue;
-    for(const m in items[k].batch) c[m] += items[k].batch[m]*n/items[m].per;
+function consume(day){
+  const rec=day===TODAY?{sales:S.todaySales, baked:S.todayBaked}:history[day];
+  const c={}; for(const m in mats) c[m]=0;
+  for(const mk in (rec.sales||{})){
+    const r=day===TODAY?recipeOf(mk):menus[mk].recipe; if(!r) continue;
+    const q=rec.sales[mk]||0;
+    for(const m in r) c[m]+=r[m]*q;
+  }
+  for(const bk in (rec.baked||{})){
+    const n=rec.baked[bk]||0; if(!n) continue;
+    for(const x in mats[bk].batch) c[x]+=mats[bk].batch[x]*n;
   }
   return c;
 }
-function madeItems(){ return Object.keys(items).filter(k=>items[k].kind==='직접 만듦'); }
-function unknownMenus(){
-  return sales.filter(s=>!s.recipe && !s.skip && !(s.menu==='딸기크로플'&&S.recipeDone));
+function stockNow(m){
+  let q=(lastCount.qty[m]??0)+(S.stockAdj[m]||0);
+  q+=(recvBase(TODAY)[m]||0);
+  if(isMade(m)) q+=(bakedOf(TODAY)[m]||0)*mats[m].yield;
+  q-=consume(TODAY)[m]||0;
+  q-=(wasteBase(TODAY)[m]||0);
+  return q;
 }
-function wasteQty(k){
-  return items[k].kind==='원부자재' ? S.wasteUnit[k] : S.waste[k];
+function avg7(m){let s=0,n=0;
+  for(const d of HIST){ if((history[d].soldOut||[]).includes(m)) continue; s+=consume(d)[m]||0; n++; }
+  return n?s/n:0;}
+function dowFactor(m,w){
+  const base=avg7(m); if(!base) return 1;
+  const d=HIST.find(x=>dow(x)===w); if(!d||(history[d].soldOut||[]).includes(m)) return 1;
+  return Math.max(0.5,Math.min(1.6,(consume(d)[m]||0)/base));
 }
-function wasteMoney(){
-  let t=0; for(const k in items) t += (wasteQty(k)||0)*costOf(k);
-  return Math.round(t);
-}
-// 메뉴 한 개의 재료 원가. 인건비는 여기 넣지 않는다 (하루 인건비로 한 번만 뺀다)
-function menuCost(s){
-  const r = s.recipe || (s.menu==='딸기크로플'&&S.recipeDone?S.newRecipe:null);
-  if(!r) return null;
-  let mat=0, taxable=0;
-  for(const k in r){
-    const it=items[k];
-    const c = it.kind==='원부자재' ? it.buy*r[k]/it.per : costOf(k)*r[k];
-    mat += c;
-    if(!TAX_FREE.includes(k)) taxable += c;
-  }
-  return {mat:Math.round(mat), taxable:Math.round(taxable)};
-}
+function coverDays(sup){const days=SUP[sup].days,out=[];
+  for(let i=1;i<=8;i++){const d=addDays(TODAY,i);out.push(d);if(days.includes(dow(d)))break;}return out;}
 
-// 하루 손익
+function orderSuggest(m){
+  const sk=skus[skuFor(m)], cover=coverDays(sk.sup);
+  const base=avg7(m), stock=stockNow(m), steps=[];
+  steps.push(['7일 평균 나간 양', fmt(m,base)]);
+  const so=HIST.filter(d=>(history[d].soldOut||[]).includes(m)).length;
+  if(so) steps.push([`품절난 ${so}일은 빼고 계산`, fmt(m,base)]);
+  let need=0; cover.forEach(d=>need+=base*dowFactor(m,dow(d)));
+  steps.push([`다음 납품까지 ${cover.length}일치 (${cover.map(d=>DOW[dow(d)]).join('·')})`, '='+fmt(m,need)]);
+  steps.push(['지금 남은 것 빼기', '−'+fmt(m,stock)]);
+  let short=Math.max(0,need-stock);
+  const raw=short/sk.size;
+  const cl=sk.showBase?'덩이':sk.cu;                    // g으로 세는 품목은 "덩이"로 말한다
+  steps.push([`한 ${cl}에 ${fmt(m,sk.size)}`, raw.toFixed(1)+cl]);
+  let qty=Math.ceil(raw/sk.unit)*sk.unit;
+  if(sk.unit>1) steps.push([`${sk.unit}${cl}들이 ${sk.box}로 맞추기`, qty+cl]);
+  return {qty, raw, stock, base, cover, steps, sku:skuFor(m), cu:sk.cu};
+}
+function bakeSuggest(m){
+  const it=mats[m], base=avg7(m), stock=stockNow(m), tm=addDays(TODAY,1);
+  const need=base*dowFactor(m,dow(tm));
+  const batches=Math.ceil(Math.max(0,need-stock)/it.yield);
+  const matsNeed={}; for(const x in it.batch) matsNeed[x]=it.batch[x]*batches;
+  return {batches, need, stock, mats:matsNeed, yieldQty:batches*it.yield,
+    steps:[['7일 평균 나간 양',fmt(m,base)],[`내일(${DOW[dow(tm)]}) 요일 보정`,fmt(m,need)],
+           ['지금 남은 것 빼기','−'+fmt(m,stock)],[`한 판 ${josa(it.yield+it.u,'으로/로')} 나누기`,batches+'판']]};
+}
+function orderList(){
+  const extra={};
+  madeMats().forEach(m=>{const b=bakeSuggest(m);for(const x in b.mats)extra[x]=(extra[x]||0)+b.mats[x];});
+  const out=[];
+  for(const m of orderMats()){
+    const sk=skus[skuFor(m)];
+    if(!SUP[sk.sup].days.includes(dow(TODAY))) continue;
+    const s=orderSuggest(m);
+    let qty=s.qty, note=null;
+    if(extra[m]){
+      const w=Math.ceil((s.raw+extra[m]/sk.size)/sk.unit)*sk.unit;
+      if(w>qty){ note=`내일 구울 몫 ${fmt(m,extra[m])} 포함`; qty=w; }
+    }
+    if(qty<=0) continue;
+    out.push({m, qty, sug:s, note, sku:skuFor(m)});
+  }
+  return out;
+}
+const unknownMenus=()=>Object.keys(menus).filter(k=>!priceOf(k)||!recipeOf(k));
+const isDeliveryDay=()=>Object.values(SUP).some(s=>s.days.includes(dow(TODAY)));
+
+function wasteMoney(){let t=0;const b=wasteBase(TODAY);for(const m in b)t+=b[m]*costOf(m);return Math.round(t);}
+const fixedMonth=()=>Object.values(S.fixed).reduce((a,b)=>a+b,0);
+const fixedDay=()=>Math.round(fixedMonth()/S.openDays);
+const laborHours=()=>S.staffHours+(S.ownerPay?S.ownerHours:0);
+const laborDay=()=>Math.round(laborHours()*S.wage);
+
 function pl(){
-  let rev=0, mat=0, taxable=0, unknownRev=0, unknownQty=0;
-  sales.forEach(s=>{
-    rev += s.price*s.qty;
-    const c = menuCost(s);
-    if(!c){ unknownRev += s.price*s.qty; unknownQty += s.qty; return; }
-    mat += c.mat*s.qty; taxable += c.taxable*s.qty;
-  });
-  const waste = wasteMoney();
-  const card  = Math.round(rev * S.cardRatio * CARD_FEE);
-  const fixed = fixedDay();
-  const labor = laborDay();
-  // 부가세 — 판매가는 부가세 포함으로 본다
-  const vat = S.taxType==='simple'
-    ? Math.round(rev * SIMPLE_RATE * VAT)                       // 간이: 매출 × 부가가치율 × 10%
-    : Math.round(rev/11 - taxable/11);                          // 일반: 매출세액 − 매입세액(면세 제외)
-  const net = rev - mat - labor - waste - card - fixed - vat;
-  return {rev, mat, labor, waste, card, fixed, vat, net, taxable,
-          rate: rev? net/rev*100 : 0,
-          lossRate: rev? waste/rev*100 : 0,
-          unknownRev, unknownQty};
-}
-function todayProfit(){ const p=pl(); return {rev:p.rev, cost:p.mat, waste:p.waste, skipRev:p.unknownRev}; }
-
-// 품목별 폐기 금액을 그 품목을 쓰는 메뉴에 소모 비중으로 나눈다
-function wasteAlloc(){
-  const alloc = {}; sales.forEach(s=>alloc[s.menu]=0);
-  for(const k in items){
-    const w = (wasteQty(k)||0)*costOf(k); if(!w) continue;
-    let tot=0; const use={};
-    sales.forEach(s=>{
-      const r = s.recipe || (s.menu==='딸기크로플'&&S.recipeDone?S.newRecipe:null);
-      if(!r || !r[k]) return;
-      const q = items[k].kind==='원부자재' ? r[k]*s.qty/items[k].per : r[k]*s.qty;
-      use[s.menu]=q; tot+=q;
-    });
-    if(!tot) continue;
-    for(const m in use) alloc[m] += w*use[m]/tot;
+  let rev=0,mat=0,taxable=0,unknownRev=0,unknownQty=0;
+  for(const k in S.todaySales){
+    const q=S.todaySales[k]||0,p=priceOf(k),c=menuCost(k);
+    if(!p||!c){ if(p)unknownRev+=p*q; unknownQty+=q; continue; }
+    rev+=p*q; mat+=c.mat*q; taxable+=c.taxable*q;
   }
-  return alloc;
+  const waste=wasteMoney(), card=Math.round(rev*S.cardRatio*CARD_FEE);
+  const fixed=fixedDay(), labor=laborDay();
+  const vat=S.taxType==='simple'?Math.round(rev*SIMPLE_RATE*VAT):Math.round(rev/11-taxable/11);
+  const net=rev-mat-labor-waste-card-fixed-vat;
+  return {rev,mat,labor,waste,card,fixed,vat,net,
+    rate:rev?net/rev*100:0, lossRate:rev?waste/rev*100:0, unknownRev, unknownQty};
+}
+function wasteAlloc(){
+  const a={}; for(const k in menus)a[k]=0;
+  const b=wasteBase(TODAY);
+  for(const m in b){
+    const w=b[m]*costOf(m); if(!w) continue;
+    let tot=0; const use={};
+    for(const mk in S.todaySales){const r=recipeOf(mk); if(!r||!r[m])continue;
+      const q=r[m]*S.todaySales[mk]; use[mk]=q; tot+=q;}
+    if(!tot) continue;
+    for(const mk in use) a[mk]+=w*use[mk]/tot;
+  }
+  return a;
+}
+function menuPL(k){
+  const q=S.todaySales[k]||0,p=priceOf(k),c=menuCost(k),rev=(p||0)*q;
+  if(!p||!c) return {rev,qty:q,unknown:true};
+  const P=pl(),share=P.rev?rev/P.rev:0;
+  const mat=c.mat*q, card=Math.round(rev*S.cardRatio*CARD_FEE);
+  const labor=Math.round(P.labor*share), fixed=Math.round(P.fixed*share), vat=Math.round(P.vat*share);
+  const waste=Math.round(wasteAlloc()[k]||0);
+  const net=rev-mat-labor-card-fixed-vat-waste;
+  return {rev,qty:q,mat,labor,card,fixed,vat,waste,net,rate:rev?net/rev*100:0};
+}
+function yesterday(){
+  const y=HIST[6],c=consume(y),sug=history[y].suggested||{},rows=[];
+  const sugByMat={}; for(const s in sug) sugByMat[skus[s].mat]=`${sug[s]}${skus[s].cu}`;
+  const wb=toBase(history[y].waste||{});
+  for(const m in mats){ if(!(c[m]>0)&&!sugByMat[m]) continue;
+    rows.push({m, sug:sugByMat[m]??null, used:c[m]||0, left:lastCount.qty[m]??0,
+               waste:wb[m]||0, soldOut:(history[y].soldOut||[]).includes(m)}); }
+  return {date:y, rows};
+}
+function weekWaste(){
+  let cur=0,rev=0; const byMat={};
+  HIST.forEach(d=>{ const b=toBase(history[d].waste||{});
+    for(const m in b){cur+=b[m]*costOf(m); byMat[m]=(byMat[m]||0)+b[m];}
+    for(const mk in history[d].sales){const p=menus[mk].price; if(p)rev+=p*history[d].sales[mk];} });
+  return {cur:Math.round(cur), prev:Math.round(cur*1.52), rate:rev?cur/rev*100:0, byMat,
+          soldOutDays:HIST.filter(d=>(history[d].soldOut||[]).length).length};
 }
 
-// 메뉴 하나의 손익 — 인건비·고정비·카드수수료·부가세·폐기까지 다 나눠 붙인다
-function menuPL(s){
-  const rev = s.price*s.qty;
-  const c = menuCost(s);
-  if(!c) return {rev, unknown:true};
-  const P = pl();
-  const share = P.rev ? rev/P.rev : 0;
-  const mat   = c.mat*s.qty;
-  const card  = Math.round(rev * S.cardRatio * CARD_FEE);
-  const labor = Math.round(P.labor*share);          // 매출 비중으로 배부
-  const fixed = Math.round(P.fixed*share);
-  const vat   = Math.round(P.vat*share);
-  const waste = Math.round(wasteAlloc()[s.menu]||0);
-  const net   = rev - mat - labor - card - fixed - vat - waste;
-  return {rev, mat, labor, card, fixed, vat, waste, net, rate: rev? net/rev*100 : 0};
-}
+/* ══════════════ 화면 ══════════════ */
+const V={};
+const fracLabel=(v,cu)=>({0:'없음',0.25:'1/4',0.5:'반 '+cu,1:'1'+cu})[v]??v+cu;
 
-/* ---------------- 화면 ---------------- */
-const V = {};
-
-V.home = () => {
-  const u = unknownMenus().length;
-  return {
-    l:'', c:'8월 30일 (일)', r:'테스트카페',
-    b:`
-      <div class="t1">${S.confirmed?'오늘 할 일을 마쳤습니다':'오늘 매출을 올려 주세요'}</div>
-      <div class="sub" style="margin:6px 0 16px">${S.confirmed?'발주 3건을 확정했습니다 · 주문 마감 15:00':'파일 하나 올리고, 버린 것만 적으면 끝납니다'}</div>
-
-      ${S.confirmed?`
-      <div class="card soft">
-        <div class="kv"><span>오늘 버린 금액</span><b class="neg">${원(wasteMoney())}</b></div>
-        <div class="kv"><span>오늘 남은 이익</span><b class="pos">${원(todayProfit().rev-todayProfit().cost-wasteMoney())}</b></div>
-      </div>`:`
-      <div class="card">
-        <span class="badge acc">오늘은 발주하는 날</span>
-        <div class="sub" style="margin-top:9px">A베이커리 · B유통 납품 요일입니다.<br>매출을 올리면 시킬 수량을 알려드립니다.</div>
-      </div>`}
-
-      ${u&&S.uploaded?`<div class="note">아직 모르는 메뉴가 ${u}개 있습니다. 알려 주시면 재료 계산이 정확해집니다.</div>`:''}
-
+V.home=()=>{
+  const u=unknownMenus().length,P=pl();
+  const yw=(()=>{const b=toBase(history[HIST[6]].waste||{});let w=0;for(const m in b)w+=b[m]*costOf(m);return w;})();
+  return {l:'', c:`${md(TODAY)} (${DOW[dow(TODAY)]})`, r:'테스트카페',
+    b:`<div class="t1">${S.confirmed?'오늘 할 일을 마쳤습니다':'오늘 매출을 올려 주세요'}</div>
+      <div class="sub" style="margin:6px 0 16px">${S.confirmed?'실제 발주는 거래처에 직접 해주세요':'사진 한 장 찍고, 버린 것만 적으면 끝납니다'}</div>
+      ${S.confirmed?`<div class="card soft">
+        <div class="kv"><span>오늘 버린 금액</span><b class="neg">${원(P.waste)}</b></div>
+        <div class="kv"><span>오늘 남은 돈</span><b class="pos">${원(P.net)}</b></div>
+        <div class="kv"><span>수익률</span><b>${P.rate.toFixed(1)}%</b></div></div>`
+      :(isDeliveryDay()?(()=>{
+        const sups=[...new Set(orderList().map(o=>skus[o.sku].sup))];
+        return `<div class="card"><span class="badge acc">오늘은 발주하는 날</span>
+          <div class="sub" style="margin:9px 0 10px">${sups.join(' · ')} 납품 요일입니다.<br>거래처를 누르면 그 거래처 것만 봅니다.</div>
+          ${sups.map(s=>{const n=orderList().filter(o=>skus[o.sku].sup===s).length;
+            return `<span class="chip" data-go="order" data-act="supFilter" data-v="${s}">${s} ${n}건</span>`;}).join('')}
+          <div class="btn sm" style="margin-top:8px" data-go="order" data-act="supAll">전부 보기</div></div>`;})():'')}
+      ${u&&S.uploaded?`<div class="note">아직 모르는 메뉴가 ${u}개 있습니다.
+        <div class="btn sm" style="margin-top:8px" data-go="recipe">지금 알려주기</div></div>`:''}
       <div class="hr"></div>
       <div class="mini" style="margin-bottom:7px">어제 결과</div>
-      <div class="card">
-        <div class="t2" style="margin-bottom:6px">어제 4,800원어치를 버렸습니다</div>
-        <div class="sub">크로플 2개 · 생크림 1통</div>
-        <div class="btn sm" style="margin-top:11px" data-go="res">어제 결과 보기</div>
-      </div>
-
-      <div class="card dash">
-        <span class="badge att">주 1회</span>
+      <div class="card"><div class="t2" style="margin-bottom:6px">어제 ${원(yw)}어치를 버렸습니다</div>
+        <div class="sub">${Object.keys(history[HIST[6]].waste||{}).map(s=>skus[s].name).join(' · ')||'버린 것 없음'}</div>
+        <div class="btn sm" style="margin-top:11px" data-go="res">어제 결과 보기</div></div>
+      <div class="card dash"><span class="badge att">주 1회</span>
         <div class="t2" style="margin:8px 0 4px">재고 맞추기</div>
         <div class="sub">앱이 계산한 재고가 맞는지 일요일에 한 번만 확인합니다.</div>
-        <div class="btn sm" style="margin-top:11px" data-go="count">지금 확인하기</div>
-      </div>
-    `,
-    f: S.confirmed
-      ? `<div class="btn" data-go="upload">다시 하기</div>`
-      : `<div class="btn pri" data-go="upload">시작하기</div>`
-  };
+        <div class="btn sm" style="margin-top:11px" data-go="count">지금 확인하기</div></div>`,
+    f:S.confirmed?`<div class="btn" data-go="upload">다시 하기</div>`:`<div class="btn pri" data-go="upload">시작하기</div>`};
 };
 
-V.upload = () => ({
-  l:'← 홈|home', c:'매출 찍기', r:'1 / 3',
-  b: !S.uploaded ? `
-      <div class="sub" style="margin-bottom:14px">포스 마감 정산 화면을 그대로 찍어 주세요.</div>
-      <div class="up" data-act="up" style="padding:44px 14px">
-        <div style="font-size:34px;line-height:1">📷</div>
+V.upload=()=>{
+  const n=S.ocrCheck.length;
+  const rows=Object.keys(menus).map(k=>{
+    const known=priceOf(k)&&recipeOf(k), unsure=S.ocrCheck.includes(k);
+    return `<div class="row" style="${unsure?'background:var(--soft)':''}">
+      <span class="nm">${menus[k].name}${!known?' <span class="mini">· 재료 모름</span>':''}
+        ${unsure?`<div class="mini" style="color:var(--att)">흐릿해요 — 맞나요?
+          <span class="chip" style="margin-left:6px;padding:2px 9px" data-act="ocrOk" data-k="${k}">맞아요</span></div>`:''}</span>
+      <span class="stp"><span class="pill sm" data-act="s-" data-k="${k}">−</span>
+        <b style="min-width:28px">${S.todaySales[k]}</b>
+        <span class="pill sm" data-act="s+" data-k="${k}">+</span></span></div>`;}).join('');
+  return {l:'← 홈|home', c:'매출 찍기', r:'1 / 3',
+    b:!S.uploaded?`<div class="sub" style="margin-bottom:14px">포스 마감 정산 화면을 그대로 찍어 주세요.</div>
+      <div class="up" data-act="up" style="padding:44px 14px"><div style="font-size:34px;line-height:1">📷</div>
         <div class="t2" style="margin-top:10px">사진 찍기</div>
-        <div class="mini" style="margin-top:6px">메뉴랑 수량이 보이게만 찍으면 됩니다</div>
-      </div>
-      <div class="note ok" style="margin-top:14px">
-        <b>글자를 못 알아봐도 괜찮습니다.</b><br>
-        읽은 값을 보여드리니 틀린 것만 고치시면 됩니다.
-      </div>
+        <div class="mini" style="margin-top:6px">메뉴랑 수량이 보이게만 찍으면 됩니다</div></div>
+      <div class="note ok" style="margin-top:14px"><b>글자를 못 알아봐도 괜찮습니다.</b><br>읽은 값을 보여드리니 틀린 것만 고치시면 됩니다.</div>
       <div style="display:flex;gap:8px;margin-top:12px">
         <div class="btn sm" style="flex:1" data-act="up">앨범에서 고르기</div>
-        <div class="btn sm" style="flex:1" data-act="up">직접 입력하기</div>
-      </div>
-      <div class="hr"></div>
-      <div class="mini">어제 찍은 사진도 남아 있어 나중에 다시 확인할 수 있습니다.</div>
-    ` : `
-      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+        <div class="btn sm" style="flex:1" data-act="up">직접 입력하기</div></div>`
+    :`<div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
         <div style="width:66px;height:88px;border:1px solid var(--line);border-radius:6px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:22px">🧾</div>
-        <div style="flex:1">
-          <div class="t2" style="font-size:13px">사진에서 읽었습니다</div>
-          <div class="mini" style="margin-top:3px">메뉴 7줄 · 총 167잔</div>
-          <div class="btn sm" style="margin-top:7px;padding:5px 9px;display:inline-block" data-act="reshoot">다시 찍기</div>
-        </div>
-      </div>
-      <div class="note">
-        <b>1줄은 흐릿해서 자신이 없습니다.</b> 아래 표시된 줄만 확인해 주세요.
-      </div>
-      ${sales.map(s=>{
-        const known = s.recipe || (s.menu==='딸기크로플'&&S.recipeDone);
-        const unsure = s.menu==='크림라떼';
-        return `<div class="row" style="${unsure?'background:var(--soft)':''}">
-          <span class="nm">${s.menu}${!known?' <span class="mini">· 재료 모름</span>':''}${unsure?'<div class="mini" style="color:var(--att)">흐릿해요 — 맞나요?</div>':''}</span>
-          ${unsure?`<span class="stp"><span class="pill">−</span><b>${s.qty}</b><span class="pill">+</span></span>`:`<b>${s.qty}</b>`}
-        </div>`;
-      }).join('')}
-      <div class="hr"></div>
-      <div class="mini">고친 값은 기억해 뒀다가 다음 사진부터 더 잘 읽습니다.</div>
-    `,
-  f: !S.uploaded ? '' :
-     (unknownMenus().length ? `<div class="btn pri" data-go="recipe">다음</div>`
-                            : `<div class="btn pri" data-go="bake">다음</div>`)
-});
+        <div style="flex:1"><div class="t2" style="font-size:13px">사진에서 읽었습니다</div>
+          <div class="mini" style="margin-top:3px">메뉴 ${Object.keys(menus).length}줄 · 총 ${Object.values(S.todaySales).reduce((a,b)=>a+b,0)}잔</div>
+          <div class="btn sm" style="margin-top:7px;padding:5px 9px;display:inline-block" data-act="reshoot">다시 찍기</div></div></div>
+      ${n?`<div class="note"><b>${n}줄은 흐릿해서 자신이 없습니다.</b> 표시된 줄을 확인해 주세요.</div>`
+         :`<div class="note ok"><b>다 확인하셨습니다.</b> 틀린 줄이 있으면 지금도 고칠 수 있습니다.</div>`}
+      ${rows}`,
+    f:!S.uploaded?'':(unknownMenus().length?`<div class="btn pri" data-go="recipe">다음</div>`:`<div class="btn pri" data-go="bake">다음</div>`)};
+};
 
-V.recipe = () => {
-  const m = unknownMenus()[0];
-  if(!m) return V.recipeDone_();
-  const sel = S.newRecipe;
-  const opts = [
-    {k:'krofl', label:'크로플 1개', v:1},
-    {k:'berry', label:'딸기 30g',  v:30},
-    {k:'cream', label:'생크림 30ml', v:30},
-    {k:'milk',  label:'우유 50ml',  v:50},
-  ];
-  // 고른 재료로 한 개 원가 계산
-  let cost=0;
-  for(const k in sel){ const it=items[k]; cost += it.kind==='원부자재' ? it.buy*sel[k]/it.per : costOf(k)*sel[k]; }
-  cost = Math.round(cost);
-  const price = S.newPrice;
-  return {
-    l:'← 매출|upload', c:'새 메뉴', r:'2 / 3',
-    b:`
-      <div class="t1">${m.menu} ${m.qty}개가 팔렸어요</div>
+V.recipe=()=>{
+  const mk=unknownMenus()[0]; if(!mk) return V.recipeDone_();
+  const sel=S.newRecipe, price=S.newPrice;
+  const opts=[{m:'krofl',label:'크로플 1개',v:1},{m:'berry',label:'딸기 30g',v:30},
+              {m:'cream',label:'생크림 30ml',v:30},{m:'milk',label:'우유 50ml',v:50}];
+  let cost=0; for(const m in sel) cost+=costOf(m)*sel[m]; cost=Math.round(cost);
+  return {l:'← 매출|upload', c:'새 메뉴', r:'2 / 3',
+    b:`<div class="t1">${menus[mk].name} ${S.todaySales[mk]}개가 팔렸어요</div>
       <div class="sub" style="margin:6px 0 14px">처음 보는 메뉴입니다. 한 번만 알려 주시면 다음부터 안 여쭤봅니다.</div>
-
-      <div class="card">
-        <div class="mini" style="margin-bottom:8px">얼마에 파세요?</div>
-        <div>${[4500,5000,5500,6000,6500].map(v=>`<span class="chip ${price===v?'on':''}" data-act="price" data-v="${v}">${v.toLocaleString()}원</span>`).join('')}</div>
-      </div>
-
-      <div class="card">
-        <div class="mini" style="margin-bottom:8px">한 개에 뭐가 들어가나요?</div>
-        ${opts.map(o=>`<span class="chip ${sel[o.k]?'on':''}" data-act="chip" data-k="${o.k}" data-v="${o.v}">${o.label}</span>`).join('')}
-      </div>
-
+      <div class="card"><div class="mini" style="margin-bottom:8px">얼마에 파세요?</div>
+        ${[4500,5000,5500,6000,6500].map(v=>`<span class="chip ${price===v?'on':''}" data-act="price" data-v="${v}">${v.toLocaleString()}원</span>`).join('')}</div>
+      <div class="card"><div class="mini" style="margin-bottom:8px">한 개에 뭐가 들어가나요?</div>
+        ${opts.map(o=>`<span class="chip ${sel[o.m]?'on':''}" data-act="chip" data-k="${o.m}" data-v="${o.v}">${o.label}</span>`).join('')}</div>
       ${price?`<div class="card soft">
         <div class="kv"><span>판매가</span><b>${원(price)}</b></div>
         <div class="kv"><span>재료값</span><b>${cost?'−'+원(cost):'아직 없음'}</b></div>
-        <div class="kv" style="border-bottom:0"><span>재료 빼고 남는 것</span><b class="pos">${cost?원(price-cost):'—'}</b></div>
-      </div>`:''}
-
-      <div class="note">
-        오늘 많이 팔린 메뉴부터 하나씩만 여쭤봅니다.<br>
-        <b>지금 넘기셔도 됩니다.</b> 판매가만 넣고 재료는 나중에 알려주셔도 됩니다.
-      </div>
-    `,
+        <div class="kv"><span>재료 빼고 남는 것</span><b class="pos">${cost?원(price-cost):'—'}</b></div></div>`:''}
+      <div class="note"><b>지금 넘기셔도 됩니다.</b> 판매가만 넣고 재료는 나중에 알려주셔도 됩니다.</div>`,
     f:`<div class="btn" data-go="bake">나중에</div>
-       <div class="btn ${price?'pri':'dis'}" data-act="saveRecipe">${price?'저장하고 다음':'판매가를 골라주세요'}</div>`
-  };
+       <div class="btn ${price?'pri':'dis'}" data-act="saveRecipe">${price?'저장하고 다음':'판매가를 골라주세요'}</div>`};
+};
+V.recipeDone_=()=>({l:'← 홈|home', c:'메뉴와 재료', r:`${Object.keys(menus).length}개`,
+  b:`<div class="note ok"><b>지금은 다 알고 있습니다.</b><br>새 메뉴가 팔리면 그때 알아서 여쭤봅니다.
+      메뉴를 누르면 판매가와 재료를 고칠 수 있습니다.</div>
+    ${Object.keys(menus).map(k=>{const r=recipeOf(k);
+      const c=r?menuCost(k).mat:null;
+      return `<div class="row" style="display:block;cursor:pointer" data-go="menuEdit" data-k="${k}">
+        <div style="display:flex;align-items:baseline">
+          <span class="nm"><b>${menus[k].name}</b> <span class="mini">${priceOf(k)?원(priceOf(k)):'판매가 모름'}</span></span>
+          <span class="mini">${c!=null?`재료값 ${원(c)}`:'재료 모름'} ›</span></div>
+        <div class="mini" style="margin-top:4px">${r?Object.keys(r).map(m=>`${mats[m].name} ${r[m]}${mats[m].u}`).join(' · '):'—'}</div></div>`;}).join('')}`,
+  f:`<div class="btn" data-go="home">홈으로</div>`});
+
+V.menuList=()=>V.recipeDone_();
+
+/* 품목 — 사 옴 / 직접 만듦 / 원부자재를 보고 고친다 */
+V.itemList=()=>({
+  l:'← 홈|home', c:'품목', r:`${Object.keys(mats).length}종`,
+  b:`<div class="note ok"><b>여기서 무엇을 사 오고 무엇을 굽는지 정합니다.</b><br>
+      품목을 누르면 크기·가격·굽는 방법을 고칠 수 있습니다.</div>
+    ${Object.keys(mats).map(m=>{
+      const kind=isMade(m)?'직접 만듦':(mats[m].kind==='직접 만듦'?'직접 만듦 (재료 미정)':mats[m].kind);
+      const sk=skusOf(m).map(s=>skus[s].name).join(' · ')||'사는 단위 없음';
+      return `<div class="row" style="display:block;cursor:pointer" data-go="itemEdit" data-k="${m}">
+        <div style="display:flex;align-items:baseline">
+          <span class="nm"><b>${mats[m].name}</b>
+            <span class="badge" style="margin-left:6px">${kind}</span></span>
+          <span class="mini">${fmt(m,stockNow(m))} 남음 ›</span></div>
+        <div class="mini" style="margin-top:4px">${isMade(m)?`한 판 ${mats[m].yield}${mats[m].u} · ${mats[m].mins}분`:sk}</div></div>`;}).join('')}`,
+  f:`<div class="btn" data-go="home">홈으로</div>`});
+
+V.itemEdit=()=>{
+  const m=S.editItem||'krofl', it=mats[m];
+  const made=it.kind==='직접 만듦';
+  const batch=it.batch||{};
+  const rest=Object.keys(mats).filter(x=>x!==m&&!(x in batch));
+  return {l:'← 품목|itemList', c:it.name, r:fmt(m,stockNow(m))+' 남음',
+    b:`<div class="card"><div class="mini" style="margin-bottom:8px">이건 어떻게 들여오나요</div>
+        ${['사 옴','직접 만듦','원부자재'].map(x=>
+          `<span class="chip ${it.kind===x?'on':''}" data-act="ikind" data-k="${m}" data-v="${x}">${x}</span>`).join('')}
+        <div class="mini" style="margin-top:8px">${it.kind==='직접 만듦'
+          ?'한 판에 뭐가 들어가는지 알려주시면 <b>오늘 구운 것</b>에 나타납니다.'
+          :'거래처에서 사 오는 것입니다. 발주 추천 대상이 됩니다.'}</div></div>
+
+      ${made?`
+        <div class="mini" style="margin:14px 0 6px">한 판에 들어가는 재료</div>
+        ${Object.keys(batch).length?Object.keys(batch).map(x=>`
+          <div class="row"><span class="nm">${mats[x].name}
+              <div class="mini">${원(unitPrice(x)*batch[x])}</div></span>
+            <span class="stp"><span class="pill sm" data-act="ib-" data-k="${x}">−</span>
+              <b style="min-width:52px;font-size:13px">${batch[x]}${mats[x].u}</b>
+              <span class="pill sm" data-act="ib+" data-k="${x}">+</span>
+              <span class="chip" style="margin:0 0 0 6px;padding:3px 9px" data-act="ibdel" data-k="${x}">빼기</span></span></div>`).join('')
+          :'<div class="card dash"><div class="sub">아직 재료를 안 넣으셨습니다. 넣어야 굽는 양을 계산할 수 있습니다.</div></div>'}
+        <div class="mini" style="margin:12px 0 6px">재료 넣기</div>
+        ${rest.map(x=>`<span class="chip" data-act="ibadd" data-k="${x}">+ ${mats[x].name}</span>`).join('')}
+        <div class="card" style="margin-top:14px">
+          <div class="row" style="border:0;padding:6px 2px"><span class="nm">한 판에 나오는 ${it.u}</span>
+            <span class="stp"><span class="pill sm" data-act="iy-">−</span><b style="min-width:44px">${it.yield||0}${it.u}</b>
+              <span class="pill sm" data-act="iy+">+</span></span></div>
+          <div class="row" style="border:0;padding:6px 2px"><span class="nm">만드는 시간</span>
+            <span class="stp"><span class="pill sm" data-act="im-">−</span><b style="min-width:44px">${it.mins||0}분</b>
+              <span class="pill sm" data-act="im+">+</span></span></div></div>
+        ${isMade(m)?`<div class="card soft">
+          <div class="kv"><span>한 판 재료값</span><b>${원(batchCost(m))}</b></div>
+          <div class="kv"><span>한 ${it.u} 원가</span><b>${원(costOf(m))}</b></div></div>`:''}`
+      :`<div class="mini" style="margin:14px 0 6px">사는 단위 (± 100원)</div>
+        ${skusOf(m).map(s=>{const sk=skus[s]; const cl=sk.showBase?'덩이':sk.cu;
+          return `<div class="row" style="display:block">
+            <div style="display:flex;align-items:baseline">
+              <span class="nm"><b>${sk.name}</b> ${sk.main?'<span class="badge">주로 씀</span>':`<span class="chip" style="padding:2px 8px" data-act="imain" data-k="${s}">주로 쓰기</span>`}</span>
+              <span class="mini">${sk.sup}</span></div>
+            <div class="row" style="border:0;padding:6px 2px"><span class="nm">한 ${cl}에 ${fmt(m,sk.size)}</span>
+              <span class="stp"><span class="pill sm" data-act="isz-" data-k="${s}">−</span>
+                <b style="min-width:56px;font-size:13px">${sk.size}${it.u}</b>
+                <span class="pill sm" data-act="isz+" data-k="${s}">+</span></span></div>
+            <div class="row" style="border:0;padding:6px 2px"><span class="nm">한 ${cl} 값</span>
+              <span class="stp"><span class="pill sm" data-act="ipr-" data-k="${s}">−</span>
+                <b style="min-width:56px;font-size:13px">${sk.buy.toLocaleString()}</b>
+                <span class="pill sm" data-act="ipr+" data-k="${s}">+</span></span></div>
+            <div class="mini" style="padding:0 2px 8px">1${it.u}당 ${Math.round(sk.buy/sk.size*100)/100}원 · 최소 주문 ${sk.unit>1?`${sk.unit}${cl}들이 ${sk.box}`:`${cl} 하나씩`}</div>
+          </div>`;}).join('')}`}
+      <div class="note" style="margin-top:14px">고친 값은 <b>오늘부터</b> 적용됩니다. 지난 기록은 그대로 둡니다.</div>`,
+    f:`<div class="btn" data-go="itemList">목록으로</div>`};
 };
 
-// 모르는 메뉴가 없을 때 — 지금까지 알려준 재료를 보여준다
-V.recipeDone_ = () => {
-  const rows = sales.filter(s=>!s.skip).map(s=>{
-    const r = s.recipe || (s.menu==='딸기크로플'&&S.recipeDone?S.newRecipe:null);
-    if(!r) return '';
-    const txt = Object.keys(r).map(k=>{
-      const it=items[k];
-      return it.kind==='완제품' ? `${it.name} ${r[k]}개` : `${it.name.replace(/ .*/,'')} ${r[k]}${it.u}`;
-    }).join(' · ');
-    return `<div class="row" style="display:block">
-      <div style="display:flex"><span class="nm"><b>${s.menu}</b></span><span class="mini">고치기</span></div>
-      <div class="mini" style="margin-top:4px">${txt}</div>
-    </div>`;
-  }).join('');
-  return {
-    l:'← 홈|home', c:'알려주신 재료', r:'',
-    b:`
-      <div class="note ok">
-        <b>지금은 다 알고 있습니다.</b><br>
-        새 메뉴가 팔리면 그때 알아서 여쭤봅니다. 미리 등록하실 필요 없습니다.
+/* 메뉴 하나 고치기 — 판매가와 재료 수량 */
+V.menuEdit=()=>{
+  const k=S.editMenu||'krofl', mn=menus[k];
+  const r=recipeOf(k)||{};
+  const price=priceOf(k)||0;
+  const cost=Object.keys(r).reduce((a,m)=>a+costOf(m)*r[m],0);
+  const step=m=>(mats[m].u==='ml'||mats[m].u==='g')?10:1;
+  const rest=Object.keys(mats).filter(m=>!(m in r));
+  return {l:'← 목록|recipe', c:mn.name, r:'고치기',
+    b:`<div class="card"><div class="mini" style="margin-bottom:8px">판매가 (± 500원)</div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="pill" data-act="mp-">−</div>
+          <div style="flex:1;text-align:center;border:1px solid var(--line);border-radius:6px;padding:11px;font-size:17px;font-weight:700">${price?price.toLocaleString()+'원':'모름'}</div>
+          <div class="pill" data-act="mp+">+</div></div></div>
+
+      <div class="mini" style="margin:14px 0 6px">한 개에 들어가는 재료</div>
+      ${Object.keys(r).length?Object.keys(r).map(m=>`
+        <div class="row"><span class="nm">${mats[m].name}
+            <div class="mini">${원(costOf(m)*r[m])} · ${fmt(m,1)}당 ${Math.round(costOf(m)*100)/100}원</div></span>
+          <span class="stp"><span class="pill sm" data-act="ma-" data-k="${m}">−</span>
+            <b style="min-width:52px;font-size:13px">${r[m]}${mats[m].u}</b>
+            <span class="pill sm" data-act="ma+" data-k="${m}">+</span>
+            <span class="chip" style="margin:0 0 0 6px;padding:3px 9px" data-act="mdel" data-k="${m}">빼기</span></span></div>`).join('')
+        :'<div class="card dash"><div class="sub">아직 재료를 안 넣으셨습니다. 아래에서 고르세요.</div></div>'}
+
+      ${rest.length?`<div class="mini" style="margin:14px 0 6px">재료 넣기 (${step('milk')===10?'ml·g는 10씩':''})</div>
+        ${rest.map(m=>`<span class="chip" data-act="madd" data-k="${m}">+ ${mats[m].name}</span>`).join('')}`:''}
+
+      <div class="card soft" style="margin-top:14px">
+        <div class="kv"><span>판매가</span><b>${price?원(price):'—'}</b></div>
+        <div class="kv"><span>재료값</span><b>${Object.keys(r).length?'−'+원(cost):'—'}</b></div>
+        <div class="kv"><span>재료 빼고 남는 것</span><b class="${price-cost>=0?'pos':'neg'}">${price&&Object.keys(r).length?원(price-cost):'—'}</b></div>
+        ${price&&Object.keys(r).length?`<div class="kv"><span>재료값 비중</span><b>${(cost/price*100).toFixed(1)}%</b></div>`:''}
       </div>
-      ${rows}
-      <div class="hr"></div>
-      <div class="mini">아메리카노는 원두가 v1 대상이 아니라 관리하지 않습니다.</div>
-    `,
-    f:`<div class="btn" data-go="home">홈으로</div>`
-  };
+      <div class="note">고친 값은 <b>오늘부터</b> 적용됩니다. 지난 기록은 그대로 둡니다.</div>`,
+    f:`<div class="btn" data-go="recipe">목록으로</div>`};
 };
 
-// 오늘 구운 것 — 직접 만드는 품목만
-V.bake = () => {
-  const rows = madeItems().map(k=>{
-    const it=items[k], n=S.baked[k];
-    const mat = Object.keys(it.batch).map(m=>`${items[m].name.replace(/ .*/,'')} ${it.batch[m]}${items[m].u}`).join(' · ');
-    return `<div class="card">
-      <div style="display:flex;align-items:flex-start">
-        <div style="flex:1">
-          <b style="font-size:14px">${it.name}</b>
-          <div class="mini" style="margin-top:3px">1판 = ${it.yield}조각 · ${it.mins}분</div>
-        </div>
-        <span class="stp"><span class="pill" data-act="b-" data-k="${k}">−</span><b>${n}</b><span class="pill" data-act="b+" data-k="${k}">+</span></span>
-      </div>
-      <div class="mini" style="margin-top:9px;padding-top:9px;border-top:1px solid #eee">한 판에 ${mat}</div>
-      ${n?`<div class="kv" style="margin-top:6px"><span>나온 조각</span><b>${n*it.yield}조각</b></div>
-           <div class="kv"><span>들어간 재료값</span><b>${원(batchCost(k)*n)}</b></div>
-           <div class="kv"><span>한 조각 원가</span><b>${원(costOf(k))}</b></div>`:''}
-    </div>`;
-  }).join('');
-  return {
-    l:'← 매출|upload', c:'오늘 구운 것', r:'',
-    b:`
-      <div class="sub" style="margin-bottom:12px">오늘 몇 판 구우셨나요? 안 구운 날은 그냥 넘기시면 됩니다.</div>
-      ${rows}
-      <div class="note ok">
-        판 수만 적으면 <b>재료가 얼마나 나갔는지</b> 앱이 계산합니다.<br>
-        밀가루·크림치즈를 따로 세실 필요 없습니다.
-      </div>
-      <div class="btn sm" data-go="cost">한 조각 원가가 어떻게 나오는지 보기</div>
-    `,
-    f:`<div class="btn pri" data-go="waste">다음</div>`
-  };
-};
+V.bake=()=>{
+  // 아직 사 오는 걸로 돼 있는 품목 — 여기서 바로 굽는 걸로 바꿀 수 있다
+  const bought=Object.keys(mats).filter(m=>mats[m].kind==='사 옴');
+  const half=Object.keys(mats).filter(m=>mats[m].kind==='직접 만듦'&&!isMade(m));
+  return {l:'← 매출|upload', c:'오늘 구운 것', r:'',
+  b:`<div class="sub" style="margin-bottom:12px">오늘 몇 판 구우셨나요? 안 구운 날은 그냥 넘기시면 됩니다.</div>
+    ${madeMats().map(m=>{const it=mats[m],n=S.todayBaked[m]||0;
+      return `<div class="card"><div style="display:flex;align-items:flex-start">
+        <div style="flex:1"><b style="font-size:14px">${it.name}</b>
+          <div class="mini" style="margin-top:3px">1판 = ${it.yield}${it.u} · ${it.mins}분</div></div>
+        <span class="stp"><span class="pill" data-act="b-" data-k="${m}">−</span><b>${n}</b>
+          <span class="pill" data-act="b+" data-k="${m}">+</span></span></div>
+        <div class="mini" style="margin-top:9px;padding-top:9px;border-top:1px solid #eee">한 판에 ${Object.keys(it.batch).map(x=>`${mats[x].name} ${it.batch[x]}${mats[x].u}`).join(' · ')}</div>
+        ${n?`<div class="kv" style="margin-top:6px"><span>나온 ${it.u}</span><b>${n*it.yield}${it.u}</b></div>
+             <div class="kv"><span>들어간 재료값</span><b>${원(batchCost(m)*n)}</b></div>
+             <div class="kv"><span>한 ${it.u} 원가</span><b>${원(costOf(m))}</b></div>`:''}</div>`;}).join('')}
+    ${madeMats().length?`<div class="note ok">판 수만 적으면 <b>재료가 얼마나 나갔는지</b> 앱이 계산합니다.</div>
+      <div class="btn sm" data-go="cost">한 조각 원가가 어떻게 나오는지 보기</div>`:''}
 
-// 원가 계산 과정
-V.cost = () => {
-  const k='basque', it=items[k];
-  const rows = Object.keys(it.batch).map(m=>{
-    const mi=items[m], amt=it.batch[m];
-    const c = mi.buy*amt/mi.per;
-    return `<div class="step"><span class="l">${mi.name} ${amt}${mi.u}<div class="mini">${원(mi.buy)} / ${mi.per}${mi.u}</div></span><span class="v">${원(Math.round(c))}</span></div>`;
-  }).join('');
-  const sell = sales.find(s=>s.menu===it.name).price;
-  return {
-    l:'← 구운 것|bake', c:'원가', r:it.name,
-    b:`
-      <div style="text-align:center;padding:8px 0 18px">
-        <div class="mini">한 조각 원가</div>
-        <div><span class="num xl">${fullCost(k).toLocaleString()}</span><span class="sub" style="font-size:15px">원</span></div>
-        <div class="mini">${원(sell)}에 팔면 <b class="pos">${원(sell-fullCost(k))}</b> 남습니다</div>
-      </div>
+    ${half.length?`<div class="note"><b>${half.map(m=>mats[m].name).join(' · ')}</b>는 굽는 걸로 해두셨는데
+      한 판에 뭐가 들어가는지 아직 안 알려주셨습니다.
+      ${half.map(m=>`<div class="btn sm" style="margin-top:8px" data-go="itemEdit" data-k="${m}">${mats[m].name} 재료 넣기</div>`).join('')}</div>`:''}
+
+    <div class="hr"></div>
+    <div class="mini" style="margin-bottom:7px">이것도 직접 구우시나요?</div>
+    <div class="sub" style="margin-bottom:8px">지금은 사 오는 걸로 돼 있습니다. 누르면 굽는 걸로 바꿉니다.</div>
+    ${bought.length?bought.map(m=>`<span class="chip" data-act="toMade" data-k="${m}">${mats[m].name}</span>`).join('')
+      :'<div class="mini">사 오는 품목이 없습니다.</div>'}`,
+  f:`<div class="btn pri" data-go="waste">다음</div>`};};
+
+V.cost=()=>{
+  const m='basque',it=mats[m],sell=priceOf('basque'),lab=Math.round(S.wage*it.mins/60);
+  return {l:'← 구운 것|bake', c:'원가', r:it.name,
+    b:`<div style="text-align:center;padding:8px 0 18px"><div class="mini">한 ${it.u} 원가</div>
+        <div><span class="num xl">${fullCost(m).toLocaleString()}</span><span class="sub" style="font-size:15px">원</span></div>
+        <div class="mini">${원(sell)}에 팔면 <b class="pos">${원(sell-fullCost(m))}</b> 남습니다</div></div>
       <div class="mini" style="margin-bottom:4px">한 판에 들어가는 것</div>
-      ${rows}
-      <div class="step" style="border-top:1px solid var(--line);border-bottom:0"><span class="l"><b>한 판 재료값</b></span><span class="v">${원(batchCost(k))}</span></div>
-      <div class="step" style="border-bottom:0"><span class="l">만드는 시간 ${it.mins}분 × 시급 ${LABOR.wage.toLocaleString()}원</span><span class="v">${원(Math.round(LABOR.wage*it.mins/60))}</span></div>
-      <div class="step" style="border-top:1px solid var(--line);border-bottom:0"><span class="l"><b>한 판</b></span><span class="v"><b>${원(batchCost(k)+Math.round(LABOR.wage*it.mins/60))}</b></span></div>
-      <div class="step" style="border-bottom:0"><span class="l">${it.yield}조각이 나오니까</span><span class="v">÷ ${it.yield}</span></div>
-      <div class="step" style="border-top:1px solid var(--line);border-bottom:0"><span class="l"><b>한 조각</b></span><span class="v"><b>${원(fullCost(k))}</b></span></div>
-
-      <div class="card soft" style="margin-top:14px">
-        <div class="mini" style="margin-bottom:7px">사 오는 것과 견주면</div>
-        <div class="kv"><span>직접 구움</span><b>${원(fullCost(k))}</b></div>
-        <div class="kv"><span>사 옴 (A베이커리)</span><b>${원(2600)}</b></div>
-        <div class="kv"><span>차이</span><b class="${fullCost(k)<2600?'pos':'neg'}">${fullCost(k)<2600?'−':'+'}${원(Math.abs(fullCost(k)-2600))}</b></div>
-      </div>
-      <div class="note" style="margin-top:12px">
-        재료값만 보면 ${원(costOf(k))}이라 싸 보이지만, <b>만드는 시간을 넣으면 ${원(fullCost(k))}</b>입니다.
-        70분 동안 다른 일을 못 하니 그 시간도 돈입니다.
-      </div>
-      <div class="mini" style="margin-top:10px">임대료·전기·수도는 여기 안 들어갑니다. 메뉴 하나에 나눠 붙이는 대신 <b>하루 매출에서 한 번에 뺍니다</b>. 결과 확인 &gt; 수익에서 보세요.</div>
-    `,
-    f:`<div class="btn" data-go="bake">돌아가기</div>`
-  };
+      ${Object.keys(it.batch).map(x=>{const sk=skus[mainSku(x)];
+        return `<div class="step"><span class="l">${mats[x].name} ${it.batch[x]}${mats[x].u}
+          <div class="mini">${sk.name} ${원(sk.buy)} ÷ ${fmt(x,sk.size)}</div></span>
+          <span class="v">${원(unitPrice(x)*it.batch[x])}</span></div>`;}).join('')}
+      <div class="step" style="border-top:1px solid var(--line);border-bottom:0"><span class="l"><b>한 판 재료값</b></span><span class="v">${원(batchCost(m))}</span></div>
+      <div class="step" style="border-bottom:0"><span class="l">만드는 시간 ${it.mins}분 × 시급 ${S.wage.toLocaleString()}원
+        <div class="mini">견주어 보라고 넣은 참고값</div></span><span class="v">${원(lab)}</span></div>
+      <div class="step" style="border-top:1px solid var(--line);border-bottom:0"><span class="l"><b>한 판</b></span><span class="v"><b>${원(batchCost(m)+lab)}</b></span></div>
+      <div class="step" style="border-bottom:0"><span class="l">${josa(it.yield+it.u,'이/가')} 나오니까</span><span class="v">÷ ${it.yield}</span></div>
+      <div class="step" style="border-top:1px solid var(--line);border-bottom:0"><span class="l"><b>한 ${it.u}</b></span><span class="v"><b>${원(fullCost(m))}</b></span></div>
+      <div class="card soft" style="margin-top:14px"><div class="mini" style="margin-bottom:6px">사 오는 것과 견주면</div>
+        <div class="kv"><span>직접 구움</span><b>${원(fullCost(m))}</b></div>
+        <div class="kv"><span>사 옴 (A베이커리)</span><b>2,600원</b></div>
+        <div class="kv"><span>차이</span><b class="${fullCost(m)<2600?'pos':'neg'}">${fullCost(m)<2600?'−':'+'}${원(Math.abs(fullCost(m)-2600))}</b></div></div>
+      <div class="mini" style="margin-top:10px">만드는 시간은 하루 인건비에 이미 들어 있습니다. 손익에서 또 빼지 않습니다.</div>`,
+    f:`<div class="btn" data-go="bake">돌아가기</div>`};
 };
 
-V.waste = () => {
-  const rows = Object.keys(items).map(k=>{
-    const it=items[k];
-    if(it.kind!=='원부자재'){
-      return `<div class="row">
-        <span class="nm">${it.name}<div class="mini">${원(costOf(k))} / 개${it.kind==='직접 만듦'?' · 직접 만듦':''}</div></span>
-        <span class="stp"><span class="pill" data-act="w-" data-k="${k}">−</span><b>${S.waste[k]}</b><span class="pill" data-act="w+" data-k="${k}">+</span></span>
-      </div>`;
+V.waste=()=>{
+  const rows=[];
+  for(const m of madeMats()){
+    const cur=S.todayWaste[m]||0;
+    rows.push(`<div class="row"><span class="nm">${mats[m].name}
+      <div class="mini">${원(costOf(m))} / ${mats[m].u} · 직접 만듦</div></span>
+      <span class="stp"><span class="pill" data-act="w-" data-k="${m}">−</span><b>${cur}</b>
+        <span class="pill" data-act="w+" data-k="${m}">+</span></span></div>`);
+  }
+  for(const s in skus){
+    const sk=skus[s], cur=S.todayWaste[s]||0;
+    if(sk.size===1){
+      rows.push(`<div class="row"><span class="nm">${sk.name}
+        <div class="mini">${원(sk.buy)} / ${sk.cu}</div></span>
+        <span class="stp"><span class="pill" data-act="w-" data-k="${s}">−</span><b>${cur}</b>
+          <span class="pill" data-act="w+" data-k="${s}">+</span></span></div>`);
+    } else {
+      const lab=v=>sk.showBase
+        ? (v===0?'없음':`${Math.round(v*sk.size)}${mats[sk.mat].u}`)
+        : fracLabel(v,sk.cu);
+      rows.push(`<div class="row" style="display:block">
+        <div style="display:flex;align-items:center"><span class="nm">${sk.name}
+          <div class="mini">${원(sk.buy)} / ${sk.showBase?fmt(sk.mat,sk.size):sk.cu}</div></span>
+          <b>${cur?lab(cur)+' · '+원(cur*sk.buy):''}</b></div>
+        <div style="margin-top:8px">${[0,0.25,0.5,1].map(v=>
+          `<span class="chip ${cur===v?'on':''}" data-act="wu" data-k="${s}" data-v="${v}">${lab(v)}</span>`).join('')}</div></div>`);
     }
-    const cur=S.wasteUnit[k];
-    return `<div class="row" style="display:block">
-      <div style="display:flex;align-items:center"><span class="nm">${it.name}<div class="mini">${원(it.buy)} / 통</div></span>
-      <b>${cur?unitLabel(cur)+' · '+원(Math.round(cur*it.buy)):''}</b></div>
-      <div style="margin-top:8px">
-        ${[[0,'없음'],[0.25,'1/4'],[0.5,'반 통'],[1,'1통']].map(([v,l])=>
-          `<span class="chip ${cur===v?'on':''}" data-act="wu" data-k="${k}" data-v="${v}">${l}</span>`).join('')}
-      </div>
-    </div>`;
-  }).join('');
-  return {
-    l:'← 매출|upload', c:'버린 것 적기', r:'3 / 3',
-    b:`
-      <div class="sub" style="margin-bottom:12px">오늘 버린 것만 적어 주세요. 없으면 그냥 넘기시면 됩니다.</div>
-      ${rows}
-      <div class="card soft" style="margin-top:14px">
-        <div class="kv"><span>오늘 버린 금액</span><b class="neg">${원(wasteMoney())}</b></div>
-      </div>
-      <div class="note">우유·생크림은 ml를 재지 않습니다. <b>통 단위로 대충 고르면 됩니다.</b></div>
-    `,
-    f:`<div class="btn pri" data-go="${'recv'}">다 했어요</div>`
-  };
+  }
+  return {l:'← 구운 것|bake', c:'버린 것 적기', r:'3 / 3',
+    b:`<div class="sub" style="margin-bottom:12px">오늘 버린 것만 적어 주세요. 없으면 그냥 넘기시면 됩니다.</div>
+      ${rows.join('')}
+      <div class="card soft" style="margin-top:14px"><div class="kv"><span>오늘 버린 금액</span><b class="neg">${원(wasteMoney())}</b></div></div>
+      <div class="note">여는 통은 <b>반 통·1/4로 대충 고르면 됩니다.</b> ml를 재지 않습니다.</div>`,
+    f:`<div class="btn pri" data-act="toRecv">다 했어요</div>`};
 };
 
-V.recv = () => ({
-  l:'← 폐기|waste', c:'받은 물건 확인', r:'',
-  b:`
-    <div class="t1">어제 시킨 게 왔나요?</div>
-    <div class="sub" style="margin:6px 0 16px">A베이커리에 어제 주문한 수량입니다.</div>
-    <div class="card">
-      <div class="row"><span class="nm">크로플</span><b>12개</b></div>
-      <div class="row" style="border-bottom:0"><span class="nm">바스크치즈케이크</span><b>7개</b></div>
-    </div>
-    <div class="note ok">이 확인 한 번이면 <b>재고를 세지 않아도</b> 앱이 지금 몇 개인지 압니다.</div>
-  `,
-  f:`<div class="btn" data-act="recvDiff">다르게 왔어요</div>
-     <div class="btn pri" data-act="recvOk">그대로 왔어요</div>`
-});
+V.recv=()=>{
+  const sug=history[HIST[6]].suggested||{};
+  const rows=Object.keys(sug).map(s=>{const sk=skus[s], v=S.todayRecv[s]??sug[s];
+    return `<div class="row"><span class="nm">${sk.name}<div class="mini">어제 시킨 수량 ${sug[s]}${sk.cu}</div></span>
+      ${S.recvEdit?`<span class="stp"><span class="pill" data-act="r-" data-k="${s}">−</span><b>${v}</b><span class="pill" data-act="r+" data-k="${s}">+</span></span>`
+                  :`<b>${v}${sk.cu}</b>`}</div>`;}).join('');
+  return {l:'← 폐기|waste', c:'받은 물건 확인', r:'',
+    b:`<div class="t1">어제 시킨 게 왔나요?</div>
+      <div class="sub" style="margin:6px 0 16px">${[...new Set(Object.keys(sug).map(s=>skus[s].sup))].join(' · ')}에 어제 주문한 수량입니다.</div>
+      <div class="card">${rows}</div>
+      <div class="note ok">이 확인 한 번이면 <b>재고를 세지 않아도</b> 앱이 지금 몇 통인지 압니다.</div>`,
+    f:S.recvEdit?`<div class="btn pri" data-act="recvOk">이대로 저장</div>`
+      :`<div class="btn" data-act="recvDiff">다르게 왔어요</div><div class="btn pri" data-act="recvOk">그대로 왔어요</div>`};
+};
 
-V.order = () => {
-  const c = consume();
-  const cards = [
-    {k:'krofl',  why:`7일 평균 13개 · 주말 +3개 · 지금 남은 것 ${items.krofl.stock}개 · 6개 단위로 맞춤`},
-    {k:'cheese', why:`내일 2판 구우면 1kg 필요 · 지금 남은 것 1.2kg · 모레치까지 보면 1kg 부족`},
-    {k:'milk',   why:`7일 평균 ${c.milk.toFixed(1)}통 · 다음 납품까지 2일 · 지금 남은 것 4통 · 12개 단위로 맞춤`},
-    {k:'bean',   why:`7일 평균 1.1kg · 지금 남은 것 3kg · 다음 주문일까지 2.2kg 필요 · 2kg 단위로 맞춤`},
-  ].map(o=>{
-    const it=items[o.k];
-    return `<div class="card" data-go="detail" data-k="${o.k}" style="cursor:pointer">
-      <div style="display:flex;justify-content:space-between;align-items:flex-end">
-        <div><b style="font-size:14px">${it.name}</b><div class="mini" style="margin-top:3px">${it.sup} · ${it.unit>1?it.unit+'개 단위':'낱개'}</div></div>
-        <div><span class="num">${S.order[o.k]}</span><span class="mini">개</span></div>
-      </div>
-      <div style="margin-top:10px;padding-top:10px;border-top:1px dashed #ddd" class="sub">${o.why} → <b>${S.order[o.k]}개</b></div>
-    </div>`;
-  }).join('');
-  const bakeCard = `
-    <div class="card dash">
-      <span class="badge acc">내일 구울 것</span>
+V.order=()=>{
+  if(!isDeliveryDay()) return V.orderNone_();
+  const all=orderList();
+  const sups=[...new Set(all.map(o=>skus[o.sku].sup))];
+  const orders=S.supFilter?all.filter(o=>skus[o.sku].sup===S.supFilter):all;
+  const bakes=S.supFilter?[]:madeMats().map(m=>({m,b:bakeSuggest(m)})).filter(x=>x.b.batches>0);
+  const bakeCards=bakes.map(({m,b})=>{const it=mats[m];
+    const short=Object.keys(b.mats).filter(x=>stockNow(x)<b.mats[x]);
+    return `<div class="card dash"><span class="badge acc">내일 구울 것</span>
       <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:9px">
-        <div><b style="font-size:14px">바스크치즈케이크</b><div class="mini" style="margin-top:3px">1판 = 8조각 · 70분</div></div>
-        <div><span class="num">2</span><span class="mini">판</span></div>
-      </div>
+        <div><b style="font-size:14px">${it.name}</b><div class="mini" style="margin-top:3px">1판 = ${it.yield}${it.u} · ${it.mins}분</div></div>
+        <div><span class="num">${b.batches}</span><span class="mini">판</span></div></div>
       <div class="sub" style="margin-top:10px;padding-top:10px;border-top:1px dashed #ddd">
-        7일 평균 14조각 · 주말이라 +3조각 · 지금 남은 것 1조각 → 16조각 = <b>2판</b>
-      </div>
-      <div class="kv" style="margin-top:8px"><span>필요한 재료</span><span>크림치즈 1kg · 계란 8개 · 생크림 400ml</span></div>
-      <div class="note" style="margin:9px 0 0">
-        <b>크림치즈가 모자랍니다.</b> 지금 1.2kg 있고 2판에 1kg이 듭니다.<br>
-        아래 B유통 발주에 넣었습니다.
-      </div>
-    </div>`;
-  return {
-    l:'', c:'오늘 할 일', r:'8월 30일',
-    b:`<div class="mini" style="margin-bottom:7px">주방</div>
-       ${bakeCard}
-       <div class="hr"></div>
-       <div class="mini" style="margin-bottom:7px">발주 · 마감 15:00</div>
-       ${cards}
-       <div class="mini" style="text-align:center;margin-top:6px">카드를 누르면 계산 과정을 볼 수 있습니다</div>`,
-    f:`<div class="btn pri" data-act="confirm">전체 확정</div>`
-  };
-};
+        7일 평균 ${fmt(m,b.need)} 예상 · 지금 ${fmt(m,b.stock)} 남음 → ${b.yieldQty}${it.u} = <b>${b.batches}판</b></div>
+      <div class="kv" style="margin-top:8px"><span>필요한 재료</span><span style="text-align:right">${Object.keys(b.mats).map(x=>`${mats[x].name} ${fmt(x,b.mats[x])}`).join(' · ')}</span></div>
+      ${short.length?`<div class="note" style="margin:9px 0 0"><b>${josa(short.map(x=>mats[x].name).join('·'),'이/가')} 모자랍니다.</b><br>아래 발주에 넣었습니다.</div>`:''}</div>`;}).join('');
+  const cardOf=o=>{const sk=skus[o.sku], q=S.order[o.m]??o.qty;
+    return `<div class="card tap" data-go="detail" data-k="${o.m}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end">
+        <div><b style="font-size:13px">${sk.name}</b>
+          <div class="mini" style="margin-top:2px">${sk.showBase?`${fmt(o.m,sk.size)}씩`:(sk.unit>1?`${sk.unit}${sk.cu}들이 ${sk.box}`:`${sk.cu} 단위`)}</div></div>
+        <div><span class="num">${sk.showBase?Math.round(q*sk.size):q}</span><span class="mini">${sk.showBase?mats[o.m].u:sk.cu}</span></div></div>
+      <div class="sub" style="margin-top:10px;padding-top:10px;border-top:1px dashed #ddd">
+        7일 평균 ${fmt(o.m,o.sug.base)} · ${o.sug.cover.length}일치 · 지금 ${fmt(o.m,o.sug.stock)} 남음 → <b>${qtyText(o.sku,q)}</b>
+        ${o.note?`<div class="mini" style="margin-top:3px">${o.note}</div>`:''}
+        ${S.orderTouched[o.m]?`<div class="mini" style="margin-top:3px">직접 ${josa(q+sk.cu,'으로/로')} 고치셨습니다</div>`:''}</div></div>`;};
+  // 거래처별로 묶어 보여준다 — 사장은 거래처 단위로 전화한다
+  const bySup={}; orders.forEach(o=>{const s=skus[o.sku].sup;(bySup[s]=bySup[s]||[]).push(o);});
+  const groups=Object.keys(bySup).map(sup=>`
+    <div class="gh" style="display:flex;justify-content:space-between;align-items:baseline;margin:0 2px 8px">
+      <span><b style="font-size:13px">${sup}</b> <span class="mini">· 마감 ${SUP[sup].deadline} · ${bySup[sup].length}건</span></span>
+      <span class="chip" style="margin:0" data-act="copy" data-v="${sup}">이 거래처만 복사</span></div>
+    ${bySup[sup].map(cardOf).join('')}`).join('<div class="hr"></div>');
 
-V.detail = () => {
-  const k=S.detail, it=items[k];
-  const steps = k==='milk'
-    ? [['1','7일 평균 나간 양','9.4통'],['2','다음 납품까지 2일','+4.2통'],['3','지금 남은 것 빼기','−4통'],['4','12개 단위로 맞춤','12통']]
-    : k==='cheese'
-    ? [['1','내일 2판 구우면','1kg'],['2','모레 2판 더 구우면','+1kg'],['3','지금 남은 것 빼기','−1.2kg'],['4','1kg 단위로 맞춤','1kg']]
-    : k==='bean'
-    ? [['1','7일 평균 나간 양','1.1kg'],['2','다음 주문일까지 2주','+2.2kg'],['3','지금 남은 것 빼기','−3kg'],['4','2kg 단위로 맞춤','2kg']]
-    : [['1','7일 평균 나간 양','13개'],['2','수요일 품절 — 그날 빼고 계산','13개'],['3','주말이라 더 나감','+3개'],['4','지금 남은 것 빼기','−2개'],['5','6개 단위로 맞춤','12개']];
-  return {
-    l:'← 목록|order', c:it.name, r:it.sup,
-    b:`
-      <div style="text-align:center;padding:8px 0 18px">
-        <div class="mini">이만큼 시키세요</div>
-        <div><span class="num xl">${S.order[k]}</span><span class="sub" style="font-size:15px">개</span></div>
-        <div class="mini">${it.unit>1?`${it.unit}개 단위 · ${(S.order[k]/it.unit)} 박스`:'낱개 주문'}</div>
-      </div>
+  return {l:S.supFilter?'← 전부|order':'', c:S.supFilter||'오늘 할 일', r:md(TODAY),
+    b:`<div style="margin-bottom:10px">
+        <span class="chip ${!S.supFilter?'on':''}" data-act="supAll">전부</span>
+        ${sups.map(s=>`<span class="chip ${S.supFilter===s?'on':''}" data-act="supFilter" data-v="${s}">${s}</span>`).join('')}</div>
+      ${bakes.length?`<div class="mini" style="margin-bottom:7px">주방</div>${bakeCards}<div class="hr"></div>`:''}
+      ${groups||'<div class="card">오늘 시킬 품목이 없습니다.</div>'}
+      <div class="mini" style="text-align:center;margin-top:6px">카드를 누르면 계산 과정과 다른 크기를 볼 수 있습니다</div>`,
+    f:`<div class="btn" data-act="copy" data-v="${S.supFilter||''}">${S.supFilter?'이 거래처 복사':'전부 복사'}</div>
+       <div class="btn pri" data-act="confirm">${orders.length+bakes.length}건 확정</div>`};
+};
+V.orderNone_=()=>{const P=pl();
+  return {l:'', c:'오늘 요약', r:md(TODAY),
+    b:`<div class="card dash"><div class="t2">오늘은 발주하는 날이 아닙니다</div></div><div class="hr"></div>
+      <div class="card"><div class="kv"><span>판 것</span><b>${원(P.rev)}</b></div>
+        <div class="kv"><span>남은 돈</span><b class="pos">${원(P.net)}</b></div></div>`,
+    f:`<div class="btn" data-go="home">홈으로</div>`};};
+
+V.detail=()=>{
+  const m=S.detail, s=orderSuggest(m), sk=skus[skuFor(m)];
+  const cur=S.order[m]??s.qty, off=cur%sk.unit;
+  const alts=skusOf(m);
+  return {l:'← 목록|order', c:mats[m].name, r:sk.sup,
+    b:`${alts.length>1?`<div style="margin-bottom:12px"><div class="mini" style="margin-bottom:6px">어느 크기로 시킬까요</div>
+        ${alts.map(a=>`<span class="chip ${a===skuFor(m)?'on':''}" data-act="sku" data-k="${m}" data-v="${a}">${skus[a].name}</span>`).join('')}
+        <div class="mini" style="margin-top:4px">${skus[mainSku(m)].name} 기준 ${fmt(m,1)}당 ${Math.round(unitPrice(m)*100)/100}원</div></div>`:''}
+      <div style="text-align:center;padding:6px 0 16px"><div class="mini">이만큼 시키세요</div>
+        <div><span class="num xl">${sk.showBase?Math.round(cur*sk.size):cur}</span><span class="sub" style="font-size:15px">${sk.showBase?mats[m].u:sk.cu}</span></div>
+        <div class="mini">${sk.name} ${sk.showBase?`${fmt(m,sk.size)}짜리 ${cur}덩이`:`· ${fmt(m,cur*sk.size)}`}${sk.unit>1?` · ${(cur/sk.unit).toFixed(0)}${sk.box}`:''}</div></div>
       <div class="mini" style="margin-bottom:4px">어떻게 나온 숫자인가요</div>
-      ${steps.map(s=>`<div class="step"><span class="i">${s[0]}</span><span class="l">${s[1]}</span><span class="v">${s[2]}</span></div>`).join('')}
+      ${s.steps.map((st,i)=>`<div class="step"><span class="i">${i+1}</span><span class="l">${st[0]}</span><span class="v">${st[1]}</span></div>`).join('')}
       <div class="hr"></div>
-      <div class="mini" style="margin-bottom:8px">몇 개 시킬까요</div>
+      <div class="mini" style="margin-bottom:8px">${sk.showBase?`몇 덩이 시킬까요 (한 덩이 ${fmt(m,sk.size)})`:`몇 ${sk.cu} 시킬까요`}</div>
       <div style="display:flex;gap:10px;align-items:center">
         <div class="pill" data-act="o-">−</div>
-        <div style="flex:1;text-align:center;border:1px solid var(--line);border-radius:6px;padding:11px;font-size:18px;font-weight:700">${S.order[k]}</div>
-        <div class="pill" data-act="o+">+</div>
-      </div>
-      ${S.order[k]%it.unit? `<div class="note" style="margin-top:10px">${it.sup}는 <b>${it.unit}개씩 묶어서</b> 주문합니다. ${Math.floor(S.order[k]/it.unit)*it.unit}개 또는 ${(Math.floor(S.order[k]/it.unit)+1)*it.unit}개로 맞춰 보세요.</div>`:''}
-    `,
-    f:`<div class="btn" data-go="order">목록으로</div><div class="btn pri" data-go="order">이대로 반영</div>`
-  };
+        <div style="flex:1;text-align:center;border:1px solid var(--line);border-radius:6px;padding:11px;font-size:18px;font-weight:700">${cur}</div>
+        <div class="pill" data-act="o+">+</div></div>
+      ${cur!==s.qty?`<div class="note" style="margin-top:10px">제안보다 <b>${Math.abs(cur-s.qty)}${sk.cu} ${cur>s.qty?'많습니다':'적습니다'}</b>. 이대로 진행합니다.</div>`:''}
+      ${off?`<div class="note" style="margin-top:10px"><b>${josa(sk.sup,'은/는')} ${sk.unit}${sk.cu}씩 ${sk.box} 단위로 주문합니다.</b>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <span class="btn sm" style="flex:1" data-act="oset" data-v="${Math.floor(cur/sk.unit)*sk.unit}">${Math.floor(cur/sk.unit)*sk.unit}${sk.cu}</span>
+          <span class="btn sm" style="flex:1" data-act="oset" data-v="${(Math.floor(cur/sk.unit)+1)*sk.unit}">${(Math.floor(cur/sk.unit)+1)*sk.unit}${sk.cu}</span></div></div>`:''}`,
+    f:`<div class="btn" data-go="order">목록으로</div><div class="btn pri" data-go="order">${josa(cur+sk.cu,'으로/로')} 반영</div>`};
 };
 
-V.done = () => ({
-  l:'', c:'확정 완료', r:'8월 30일',
-  b:`
-    <div class="t1" style="margin-bottom:14px">오늘 할 일이 정해졌습니다</div>
-    <div class="card soft">
-      <div class="t2" style="font-size:13px;margin-bottom:8px">주방</div>
-      <div class="kv"><span>바스크치즈케이크</span><b>내일 2판 (16조각)</b></div>
-    </div>
-    <div class="card">
-      <div class="t2" style="font-size:13px;margin-bottom:8px">A베이커리 <span class="mini">· 마감 15:00</span></div>
-      <div class="kv"><span>크로플</span><b>${S.order.krofl}개 (${S.order.krofl/6}박스)</b></div>
-    </div>
-    <div class="card">
-      <div class="t2" style="font-size:13px;margin-bottom:8px">B유통 <span class="mini">· 마감 16:00</span></div>
-      <div class="kv"><span>우유 1L</span><b>${S.order.milk}개 (1박스)</b></div>
-      <div class="kv" style="border-bottom:0"><span>크림치즈 1kg</span><b>${S.order.cheese}개</b></div>
-    </div>
-    <div class="card">
-      <div class="t2" style="font-size:13px;margin-bottom:8px">C커피 <span class="mini">· 마감 17:00</span></div>
-      <div class="kv" style="border-bottom:0"><span>원두 1kg</span><b>${S.order.bean}개</b></div>
-    </div>
-    <div class="note"><b>실제 발주는 직접 해주세요.</b><br>전화나 메신저로 거래처에 주문하시면 됩니다.</div>
-    <div class="btn sm" style="margin-bottom:14px">발주 내역 복사</div>
-    <div class="hr"></div>
-    <div class="card dash">
-      <span class="badge att">내일까지 쓰면 좋아요</span>
-      <div class="t2" style="margin:9px 0 5px">생크림 2통 · ${원(8400)}</div>
-      <div class="sub">내일 크림라떼를 하루 메뉴로 올리면 한 통이 나갑니다.<br>남은 건 스콘에 곁들여 세트로 묶어 보세요.</div>
-      <div class="mini" style="margin-top:9px;padding-top:8px;border-top:1px solid #eee">재료 상태는 직접 확인해 주세요.</div>
-    </div>
-  `,
-  f:`<div class="btn pri" data-go="home">홈으로</div>`
-});
+V.done=()=>{
+  const orders=orderList(), bySup={};
+  orders.forEach(o=>{const s=skus[o.sku].sup;(bySup[s]=bySup[s]||[]).push(o);});
+  const bakes=madeMats().map(m=>({m,b:bakeSuggest(m)})).filter(x=>x.b.batches>0);
+  const expiring=Object.keys(mats).filter(m=>mats[m].shelf<=1&&stockNow(m)>0);
+  const useUp=m=>{const left=stockNow(m),cands=[];
+    for(const mk in menus){const r=recipeOf(mk); if(!r||!r[m])continue; cands.push({mk,n:Math.floor(left/r[m])});}
+    cands.sort((a,b)=>b.n-a.n);
+    const top=cands.filter(c=>c.n>0).slice(0,2);
+    if(!top.length) return '내일까지 못 쓰면 버리게 됩니다. 직원 시식으로 돌리거나 서비스로 내보세요.';
+    return `${top.map(c=>`${menus[c.mk].name} ${c.n}개`).join(' 또는 ')} 분량입니다.<br>내일 하루 메뉴로 올리거나 세트로 묶어 내보세요.`;};
+  return {l:'', c:'확정 완료', r:md(TODAY),
+    b:`<div class="t1" style="margin-bottom:14px">오늘 할 일이 정해졌습니다</div>
+      ${bakes.length?`<div class="card soft"><div class="t2" style="font-size:13px;margin-bottom:8px">주방</div>
+        ${bakes.map(({m,b})=>`<div class="kv"><span>${mats[m].name}</span><b>내일 ${b.batches}판 (${b.yieldQty}${mats[m].u})</b></div>`).join('')}</div>`:''}
+      ${Object.keys(bySup).map(sup=>`<div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+          <span class="t2" style="font-size:13px">${sup} <span class="mini">· 마감 ${SUP[sup].deadline}</span></span>
+          <span class="chip" style="margin:0" data-act="copy" data-v="${sup}">복사</span></div>
+        ${bySup[sup].map(o=>{const q=S.order[o.m]??o.qty,sk=skus[o.sku];
+          return `<div class="kv"><span>${sk.name}</span><b>${qtyText(o.sku,q)}${sk.unit>1?` (${(q/sk.unit).toFixed(0)}${sk.box})`:''}</b></div>`;}).join('')}
+        <div class="btn sm" style="margin-top:10px" data-act="copy" data-v="${sup}">${sup} 내역 복사해서 보내기</div></div>`).join('')}
+      <div class="note"><b>실제 발주는 직접 해주세요.</b><br><span class="sub">복사한 내역을 전화나 메신저로 거래처에 보내시면 됩니다.</span></div>
+      ${expiring.length?`<div class="hr"></div><div class="card dash"><span class="badge att">내일까지 쓰면 좋아요</span>
+        ${expiring.map(m=>`<div class="t2" style="margin:9px 0 5px">${mats[m].name} ${fmt(m,stockNow(m))} · ${원(stockNow(m)*costOf(m))}</div>
+          <div class="sub">${useUp(m)}</div>`).join('')}
+        <div class="mini" style="margin-top:9px;padding-top:8px;border-top:1px solid #eee">재료 상태는 직접 확인해 주세요.</div></div>`:''}`,
+    f:`<div class="btn" data-act="copy">발주 내역 복사</div><div class="btn pri" data-go="home">홈으로</div>`};
+};
 
-V.res = () => {
-  const p = todayProfit();
-  const c = consume();
-  const tab = S.resTab;
-  let body = `<div class="tabs">
+V.res=()=>{
+  const tab=S.resTab;
+  let body=`<div class="tabs">
     <div class="${tab==='ye'?'on':''}" data-act="tab" data-v="ye">어제</div>
     <div class="${tab==='wk'?'on':''}" data-act="tab" data-v="wk">버린 것</div>
-    <div class="${tab==='pf'?'on':''}" data-act="tab" data-v="pf">수익</div>
-  </div>`;
-
-  if(tab==='ye'){
-    body += `<table class="tb">
-      <tr><th>품목</th><th>추천</th><th>나감</th><th>남음</th><th>버림</th></tr>
-      <tr><td>크로플</td><td>18</td><td>16</td><td>2</td><td>0</td></tr>
-      <tr><td>바스크치즈</td><td>7</td><td>7</td><td>0</td><td>0</td></tr>
-      <tr><td>우유 1L</td><td>12</td><td>${c.milk.toFixed(1)}</td><td>4</td><td>${S.wasteUnit.milk?unitLabel(S.wasteUnit.milk):'0'}</td></tr>
-    </table>
-    <div class="note" style="margin-top:14px"><b>바스크치즈케이크가 다 팔렸습니다</b> (18:40)<br>더 팔릴 수 있었습니다. 다음 추천에 반영했습니다.</div>`;
-  }
-  if(tab==='wk'){
-    body += `<div class="card">
-        <div class="mini">이번 주 버린 금액</div>
-        <div style="margin:4px 0 6px"><span class="num neg">14,200</span><span class="sub">원</span></div>
-        <div class="sub">지난주 21,600원 → <b>7,400원 줄었습니다</b></div>
-      </div>
-      <div class="card">
-        <div class="mini" style="margin-bottom:6px">품절</div>
-        <div class="kv"><span>이번 주</span><b>2일 / 7일</b></div>
+    <div class="${tab==='pf'?'on':''}" data-act="tab" data-v="pf">수익</div></div>`;
+  if(tab==='ye'){const y=yesterday();
+    body+=`<table class="tb"><tr><th>품목</th><th>추천</th><th>나감</th><th>남음</th><th>버림</th></tr>
+      ${y.rows.map(r=>`<tr><td>${mats[r.m].name}</td><td>${r.sug??'—'}</td>
+        <td>${fmt(r.m,r.used)}</td><td>${fmt(r.m,r.left)}</td><td>${r.waste?fmt(r.m,r.waste):'0'}</td></tr>`).join('')}</table>
+      ${y.rows.filter(r=>r.soldOut).map(r=>`<div class="note" style="margin-top:12px">
+        <b>${josa(mats[r.m].name,'이/가')} 다 팔렸습니다</b><br>
+        <span class="sub">더 팔릴 수 있었습니다. 평균 계산에서 그날을 뺐습니다.</span></div>`).join('')}`;}
+  if(tab==='wk'){const w=weekWaste();
+    body+=`<div class="card"><div class="mini" style="margin-bottom:4px">이번 주 버린 금액</div>
+      <div><span class="num neg">${w.cur.toLocaleString()}</span><span class="sub">원</span></div>
+      <div class="sub" style="margin-top:6px">지난주 ${w.prev.toLocaleString()}원 → <b>${(w.prev-w.cur).toLocaleString()}원 줄었습니다</b></div>
+      <div class="sub">매출의 <b>${w.rate.toFixed(1)}%</b> · 업계 목표 3% 이내</div></div>
+      <div class="card"><div class="mini" style="margin-bottom:6px">품절</div>
+        <div class="kv"><span>이번 주</span><b>${w.soldOutDays}일 / 7일</b></div>
         <div class="kv"><span>지난주</span><span>2일 / 7일</span></div>
-        <div class="note ok" style="margin:10px 0 0">품절이 늘지 않았습니다. 버리는 양만 줄었습니다.</div>
-      </div>`;
-  }
-  if(tab==='pf'){
-    const x = pl();
-    body += `
-      <div class="card">
-        <div class="mini">오늘 남은 돈</div>
-        <div style="margin:4px 0"><span class="num ${x.net>=0?'pos':'neg'}">${x.net.toLocaleString()}</span><span class="sub">원</span></div>
-        <div class="sub">수익률 <b class="${x.rate>=0?'pos':'neg'}">${x.rate.toFixed(1)}%</b> · 손실률 <b class="neg">${x.lossRate.toFixed(1)}%</b></div>
-      </div>
-      <table class="tb">
-        <tr><th>항목</th><th>금액</th><th>매출 대비</th></tr>
+        <div class="note ok" style="margin:10px 0 0">품절이 늘지 않았습니다. 버리는 양만 줄었습니다.</div></div>
+      <div class="card"><div class="mini" style="margin-bottom:6px">무엇을 버렸나</div>
+        ${Object.keys(w.byMat).sort((a,b)=>w.byMat[b]*costOf(b)-w.byMat[a]*costOf(a)).map(m=>
+          `<div class="kv"><span>${mats[m].name}</span><span>${fmt(m,w.byMat[m])} · ${원(w.byMat[m]*costOf(m))}</span></div>`).join('')}</div>`;}
+  if(tab==='pf'){const x=pl();
+    const rows=Object.keys(menus).map(k=>({k,m:menuPL(k)})).sort((a,b)=>(b.m.rate??-99)-(a.m.rate??-99));
+    const gap=x.net-rows.reduce((a,r)=>a+(r.m.unknown?0:r.m.net),0);
+    body+=`<div class="card"><div class="mini">오늘 남은 돈</div>
+      <div style="margin:4px 0"><span class="num ${x.net>=0?'pos':'neg'}">${Math.round(x.net).toLocaleString()}</span><span class="sub">원</span></div>
+      <div class="sub">수익률 <b class="${x.rate>=0?'pos':'neg'}">${x.rate.toFixed(1)}%</b> · 손실률 <b class="neg">${x.lossRate.toFixed(1)}%</b></div></div>
+      <table class="tb"><tr><th>항목</th><th>금액</th><th>매출 대비</th></tr>
         <tr><td><b>판 것</b></td><td class="pos"><b>${원(x.rev)}</b></td><td>100%</td></tr>
         <tr><td>재료값</td><td>−${원(x.mat)}</td><td>${(x.mat/x.rev*100).toFixed(1)}%</td></tr>
         <tr><td>인건비 ${laborHours()}시간</td><td>−${원(x.labor)}</td><td>${(x.labor/x.rev*100).toFixed(1)}%</td></tr>
@@ -761,250 +857,337 @@ V.res = () => {
         <tr><td>카드 수수료<div class="mini">카드 ${(S.cardRatio*100).toFixed(0)}% × 2.2%</div></td><td>−${원(x.card)}</td><td>${(x.card/x.rev*100).toFixed(1)}%</td></tr>
         <tr><td>고정비 (하루치)</td><td>−${원(x.fixed)}</td><td>${(x.fixed/x.rev*100).toFixed(1)}%</td></tr>
         <tr><td>부가세<div class="mini">${S.taxType==='simple'?'간이과세':'일반과세'}</div></td><td>−${원(x.vat)}</td><td>${(x.vat/x.rev*100).toFixed(1)}%</td></tr>
-        <tr><td><b>남은 것</b></td><td><b class="${x.net>=0?'pos':'neg'}">${원(x.net)}</b></td><td><b>${x.rate.toFixed(1)}%</b></td></tr>
-      </table>
+        <tr><td><b>남은 것</b></td><td><b class="${x.net>=0?'pos':'neg'}">${원(x.net)}</b></td><td><b>${x.rate.toFixed(1)}%</b></td></tr></table>
       <div class="btn sm" style="margin-top:10px" data-go="fixed">매장 설정 고치기</div>
-
       <div class="hr"></div>
-      <div class="mini" style="margin-bottom:6px">메뉴별 — <b>고정비·수수료·세금까지 다 뺀</b> 순이익</div>
-      <table class="tb">
-        <tr><th>메뉴</th><th>판 것</th><th>남는 것</th><th>수익률</th></tr>
-        ${[...sales].map(s=>menuPL(s)&&{s,m:menuPL(s)}).sort((a,b)=>(b.m.rate??-99)-(a.m.rate??-99)).map(({s,m})=>{
-          if(m.unknown) return `<tr><td>${s.menu} ${s.qty}</td><td>${원(m.rev)}</td><td class="mini">재료 모름</td><td>—</td></tr>`;
-          const made = items[Object.keys(s.recipe||{})[0]]?.kind==='직접 만듦';
-          return `<tr><td>${s.menu} ${s.qty}${made?' <span class="mini">직접</span>':''}</td>
-            <td>${원(m.rev)}</td><td class="${m.net>=0?'pos':'neg'}">${원(m.net)}</td><td class="${m.rate>=0?'pos':'neg'}"><b>${m.rate.toFixed(0)}%</b></td></tr>`;
-        }).join('')}
-        ${(()=>{ const sum = sales.reduce((a,s)=>{const m=menuPL(s); return a+(m.unknown?0:m.net);},0);
-          const gap = x.net - sum;
-          return Math.abs(gap)>1 ? `<tr><td class="mini">재료 모르는 메뉴 몫</td><td class="mini">—</td><td class="mini">${원(Math.round(gap))}</td><td class="mini">—</td></tr>
-          <tr><td><b>합계</b></td><td><b>${원(x.rev)}</b></td><td><b>${원(x.net)}</b></td><td><b>${x.rate.toFixed(0)}%</b></td></tr>` :
-          `<tr><td><b>합계</b></td><td><b>${원(x.rev)}</b></td><td><b>${원(x.net)}</b></td><td><b>${x.rate.toFixed(0)}%</b></td></tr>`; })()}
-      </table>
-      <div class="btn sm" style="margin-top:9px" data-go="menupl">메뉴 하나씩 뜯어보기</div>
-
-      <div class="note" style="margin-top:14px">
-        <b>바스크치즈케이크는 직접 구울 값어치가 적습니다.</b><br>
-        재료값 ${원(costOf('basque'))} + 만드는 시간 ${원(makeLabor('basque'))}어치 = <b>${원(fullCost('basque'))}</b>.
-        사 오면 2,600원입니다. 한 조각에 ${원(Math.abs(2600-fullCost('basque')))} ${2600>fullCost('basque')?'덜':'더'} 듭니다.
-        <div class="mini" style="margin-top:6px">만드는 시간은 위 인건비에 이미 들어 있습니다. 여기서는 견주어 보라고 따로 보여드립니다.</div>
-      </div>
-      ${x.unknownQty?`<div class="note">
-        <b>${원(x.unknownRev)}은 원가를 모릅니다.</b> 딸기크로플 ${x.unknownQty}개의 재료를 아직 안 알려 주셨습니다.
-        매출에는 들어갔지만 원가가 빠져 있어 <b>수익률이 실제보다 높게 나옵니다.</b>
-        <div class="btn sm" style="margin-top:8px" data-go="recipe">지금 알려주기</div>
-      </div>`:''}`;
-  }
+      <div class="mini" style="margin-bottom:6px">메뉴별 — 인건비·고정비·세금까지 다 뺀 순이익</div>
+      <table class="tb"><tr><th>메뉴</th><th>판 것</th><th>남는 것</th><th>수익률</th></tr>
+        ${rows.map(({k,m})=>m.unknown?`<tr><td>${menus[k].name} ${m.qty}</td><td>${m.rev?원(m.rev):'—'}</td><td class="mini">재료 모름</td><td>—</td></tr>`
+          :`<tr><td>${menus[k].name} ${m.qty}</td><td>${원(m.rev)}</td><td class="${m.net>=0?'pos':'neg'}">${원(m.net)}</td><td><b>${m.rate.toFixed(0)}%</b></td></tr>`).join('')}
+        ${Math.abs(gap)>1?`<tr><td class="mini">재료 모르는 메뉴 몫</td><td class="mini">—</td><td class="mini">${원(gap)}</td><td class="mini">—</td></tr>`:''}
+        <tr><td><b>합계</b></td><td><b>${원(x.rev)}</b></td><td><b>${원(x.net)}</b></td><td><b>${x.rate.toFixed(0)}%</b></td></tr></table>
+      <div class="btn sm" style="margin-top:9px" data-go="menupl">메뉴 하나씩 뜯어보기</div>`;}
   return {l:'← 홈|home', c:'결과 확인', r:'', b:body, f:`<div class="btn" data-go="home">홈으로</div>`};
 };
 
-// 메뉴 하나 뜯어보기
-V.menupl = () => {
-  const s = sales.find(x=>x.menu===S.plMenu) || sales[3];
-  const m = menuPL(s);
-  const chips = sales.map(x=>`<span class="chip ${x.menu===s.menu?'on':''}" data-act="plm" data-v="${x.menu}">${x.menu}</span>`).join('');
-  if(m.unknown) return {l:'← 수익|res', c:s.menu, r:'', b:`${chips}<div class="note" style="margin-top:12px">재료를 아직 안 알려 주셔서 계산할 수 없습니다.<div class="btn sm" style="margin-top:8px" data-go="recipe">지금 알려주기</div></div>`, f:`<div class="btn" data-go="res">돌아가기</div>`};
-  const per = v => 원(Math.round(v/s.qty));
-  return {
-    l:'← 수익|res', c:s.menu, r:`${s.qty}개`,
-    b:`
-      ${chips}
-      <div style="text-align:center;padding:14px 0 16px">
-        <div class="mini">한 개 팔면 남는 돈</div>
-        <div><span class="num xl ${m.net>=0?'pos':'neg'}">${Math.round(m.net/s.qty).toLocaleString()}</span><span class="sub" style="font-size:15px">원</span></div>
-        <div class="mini">수익률 <b class="${m.rate>=0?'pos':'neg'}">${m.rate.toFixed(1)}%</b></div>
-      </div>
-      <table class="tb">
-        <tr><th>항목</th><th>한 개</th><th>${s.qty}개</th></tr>
-        <tr><td><b>판매가</b></td><td><b>${원(s.price)}</b></td><td><b>${원(m.rev)}</b></td></tr>
+V.menupl=()=>{
+  const k=S.plMenu,m=menuPL(k),q=m.qty||1;
+  const chips=Object.keys(menus).map(x=>`<span class="chip ${x===k?'on':''}" data-act="plm" data-v="${x}">${menus[x].name}</span>`).join('');
+  if(m.unknown) return {l:'← 수익|res', c:menus[k].name, r:'',
+    b:`${chips}<div class="note" style="margin-top:12px">재료나 판매가를 아직 안 알려주셔서 계산할 수 없습니다.
+      <div class="btn sm" style="margin-top:8px" data-go="recipe">지금 알려주기</div></div>`,
+    f:`<div class="btn" data-go="res">돌아가기</div>`};
+  const per=v=>원(v/q);
+  return {l:'← 수익|res', c:menus[k].name, r:`${q}개`,
+    b:`${chips}<div style="text-align:center;padding:14px 0"><div class="mini">한 개 팔면 남는 돈</div>
+        <div><span class="num xl ${m.net>=0?'pos':'neg'}">${Math.round(m.net/q).toLocaleString()}</span><span class="sub" style="font-size:15px">원</span></div>
+        <div class="mini">수익률 <b class="${m.rate>=0?'pos':'neg'}">${m.rate.toFixed(1)}%</b></div></div>
+      <table class="tb"><tr><th>항목</th><th>한 개</th><th>${q}개</th></tr>
+        <tr><td><b>판매가</b></td><td><b>${원(priceOf(k))}</b></td><td><b>${원(m.rev)}</b></td></tr>
         <tr><td>재료값</td><td>−${per(m.mat)}</td><td>−${원(m.mat)}</td></tr>
         <tr><td>인건비 몫</td><td>−${per(m.labor)}</td><td>−${원(m.labor)}</td></tr>
         ${m.waste?`<tr><td>버린 것 몫</td><td>−${per(m.waste)}</td><td class="neg">−${원(m.waste)}</td></tr>`:''}
         <tr><td>카드 수수료</td><td>−${per(m.card)}</td><td>−${원(m.card)}</td></tr>
         <tr><td>고정비 몫</td><td>−${per(m.fixed)}</td><td>−${원(m.fixed)}</td></tr>
         <tr><td>부가세</td><td>−${per(m.vat)}</td><td>−${원(m.vat)}</td></tr>
-        <tr><td><b>남는 것</b></td><td><b class="${m.net>=0?'pos':'neg'}">${per(m.net)}</b></td><td><b class="${m.net>=0?'pos':'neg'}">${원(m.net)}</b></td></tr>
-      </table>
-      <div class="note" style="margin-top:14px">
-        <b>인건비 몫과 고정비 몫</b>은 하루 인건비·임대료·전기·수도를 <b>매출 비중</b>으로 나눈 값입니다.
-        이 메뉴가 오늘 매출의 ${(m.rev/pl().rev*100).toFixed(0)}%라 그만큼 붙였습니다.
-      </div>
-    `,
-    f:`<div class="btn" data-go="res">돌아가기</div>`
-  };
+        <tr><td><b>남는 것</b></td><td><b class="${m.net>=0?'pos':'neg'}">${per(m.net)}</b></td><td><b>${원(m.net)}</b></td></tr></table>
+      <div class="note" style="margin-top:12px"><b>인건비 몫과 고정비 몫</b>은 매출 비중으로 나눈 값입니다.
+        이 메뉴가 오늘 매출의 ${(m.rev/pl().rev*100).toFixed(0)}%라 그만큼 붙였습니다.</div>`,
+    f:`<div class="btn" data-go="res">돌아가기</div>`};
 };
 
-// 매장 설정 — 고정비 · 인건비 · 과세유형 · 카드비중
-V.fixed = () => ({
-  l:'← 결과|res', c:'매장 설정', r:'',
-  b:`
-    <div class="mini" style="margin-bottom:6px">한 달에 나가는 돈</div>
-    ${Object.keys(FIXED).map(k=>`<div class="row">
-      <span class="nm">${FIXED[k].name}</span>
-      <span class="inp" style="min-width:96px;text-align:right;border:1px solid var(--line);border-radius:6px;padding:8px">${FIXED[k].v.toLocaleString()}</span>
-    </div>`).join('')}
-    <div class="card soft" style="margin-top:10px">
-      <div class="kv"><span>한 달 고정비</span><b>${원(fixedMonth())}</b></div>
-      <div class="kv" style="border-bottom:0"><span>영업일 ${OPEN_DAYS}일로 나누면</span><b>하루 ${원(fixedDay())}</b></div>
-    </div>
-
-    <div class="hr"></div>
-    <div class="mini" style="margin-bottom:6px">인건비 — 시급으로만 계산합니다</div>
-    <div class="row"><span class="nm">시급</span><span class="inp" style="min-width:96px;text-align:right;padding:8px">${LABOR.wage.toLocaleString()}</span></div>
-    <div class="row"><span class="nm">직원 하루 근무</span><span class="inp" style="min-width:96px;text-align:right;padding:8px">${LABOR.staffHours}시간</span></div>
-    <div class="row" style="display:block">
-      <div style="display:flex;align-items:center">
-        <span class="nm">사장님 하루 근무<div class="mini">본인 시간도 비용으로 볼지 고르세요</div></span>
-        <span class="inp" style="min-width:96px;text-align:right;padding:8px">${LABOR.ownerHours}시간</span>
-      </div>
-      <div style="margin-top:9px">
-        <span class="chip ${S.ownerPay?'':'on'}" data-act="owner" data-v="0">빼고 보기</span>
-        <span class="chip ${S.ownerPay?'on':''}" data-act="owner" data-v="1">넣고 보기</span>
-      </div>
-    </div>
-    <div class="card soft" style="margin-top:10px">
-      <div class="kv" style="border-bottom:0"><span>하루 인건비 ${laborHours()}시간</span><b>${원(laborDay())}</b></div>
-    </div>
-    <div class="note ok">
-      <b>만드는 시간은 따로 안 뺍니다.</b> 케이크 굽는 70분도 이 근무시간 안에 들어 있습니다.
-      원가 화면에서 시급으로 환산해 보여드리는 건 <b>사 오는 것과 견주라고</b> 표시하는 값입니다.
-    </div>
-
-    <div class="hr"></div>
-    <div class="mini" style="margin-bottom:6px">부가세</div>
-    <div>
+V.fixed=()=>{
+  const nr=(label,val,act,suffix='')=>`<div class="row"><span class="nm">${label}</span>
+    <span class="stp"><span class="pill sm" data-act="${act}-">−</span>
+      <b style="min-width:74px;font-size:13px">${val.toLocaleString()}${suffix}</b>
+      <span class="pill sm" data-act="${act}+">+</span></span></div>`;
+  return {l:'← 결과|res', c:'매장 설정', r:'',
+    b:`<div class="mini" style="margin-bottom:6px">한 달에 나가는 돈 (± 10,000원)</div>
+      ${Object.keys(S.fixed).map(k=>`<div class="row"><span class="nm">${FIXED_NAME[k]}</span>
+        <span class="stp"><span class="pill sm" data-act="fx-" data-k="${k}">−</span>
+          <b style="min-width:74px;font-size:13px">${S.fixed[k].toLocaleString()}</b>
+          <span class="pill sm" data-act="fx+" data-k="${k}">+</span></span></div>`).join('')}
+      ${nr('영업일수', S.openDays, 'od', '일')}
+      <div class="card soft" style="margin-top:10px">
+        <div class="kv"><span>한 달 고정비</span><b>${원(fixedMonth())}</b></div>
+        <div class="kv"><span>하루치</span><b>${원(fixedDay())}</b></div></div>
+      <div class="hr"></div>
+      <div class="mini" style="margin-bottom:6px">인건비 — 시급으로만 계산합니다</div>
+      ${nr('시급 (± 500)', S.wage, 'wg')}
+      ${nr('직원 하루 근무', S.staffHours, 'sh', '시간')}
+      ${nr('사장님 하루 근무', S.ownerHours, 'oh', '시간')}
+      <div style="margin:8px 0 0">
+        <span class="chip ${S.ownerPay?'':'on'}" data-act="owner" data-v="0">사장님 시간 빼고 보기</span>
+        <span class="chip ${S.ownerPay?'on':''}" data-act="owner" data-v="1">넣고 보기</span></div>
+      <div class="card soft" style="margin-top:10px"><div class="kv"><span>하루 인건비 ${laborHours()}시간</span><b>${원(laborDay())}</b></div></div>
+      <div class="note ok"><b>만드는 시간은 따로 안 뺍니다.</b> 케이크 굽는 70분도 이 근무시간 안에 있습니다.</div>
+      <div class="hr"></div>
+      <div class="mini" style="margin-bottom:6px">부가세</div>
       <span class="chip ${S.taxType==='normal'?'on':''}" data-act="tax" data-v="normal">일반과세</span>
       <span class="chip ${S.taxType==='simple'?'on':''}" data-act="tax" data-v="simple">간이과세</span>
-    </div>
-    <div class="mini" style="margin-top:8px;line-height:1.7">
-      ${S.taxType==='normal'
-        ? '매출세액 − 매입세액으로 계산합니다. 판매가는 부가세가 포함된 값으로 봅니다.<br><b>우유·계란·과일은 면세라 매입세액 공제가 안 됩니다.</b> 그만큼 세금이 더 나옵니다.'
-        : '매출 × 15%(음식점 부가가치율) × 10%로 계산합니다. 연 매출 1억 미만일 때만 해당합니다.'}
-    </div>
-
-    <div class="hr"></div>
-    <div class="mini" style="margin-bottom:6px">카드 비중</div>
-    <div>
+      <div class="mini" style="margin-top:8px;line-height:1.7">${S.taxType==='normal'
+        ?'매출세액 − 매입세액. <b>우유·계란·과일은 면세라 공제가 안 됩니다.</b>'
+        :'매출 × 15%(음식점 부가가치율) × 10%.'}</div>
+      <div class="hr"></div>
+      <div class="mini" style="margin-bottom:6px">카드 비중</div>
       ${[0.7,0.8,0.85,0.9,0.95].map(v=>`<span class="chip ${Math.abs(S.cardRatio-v)<0.001?'on':''}" data-act="card" data-v="${v}">${v*100}%</span>`).join('')}
-    </div>
-    <div class="mini" style="margin-top:8px">현금·간편결제를 뺀 카드 결제 비중입니다. 수수료 2.2%는 여기에만 붙습니다.</div>
-  `,
-  f:`<div class="btn pri" data-go="res">저장</div>`
-});
-
-V.count = () => {
-  const c = consume();
-  const rows = [
-    ['krofl', 14, 14],
-    ['basque', 8, 8],
-    ['cookie', 21, 20],
-    ['milk', 6, 5],
-    ['cream', 2, 2],
-    ['berry', 1, 1],
-    ['cheese', 2, 2],
-    ['egg', 1, 1],
-  ].map(([k,calc,real])=>`<div class="row">
-      <span class="nm">${items[k].name}<div class="mini">앱 계산 ${calc}</div></span>
-      <span class="stp"><span class="pill">−</span><b>${real}</b><span class="pill">+</span></span>
-    </div>`).join('');
-  return {
-    l:'← 홈|home', c:'재고 맞추기', r:'주 1회',
-    b:`
-      <div class="note ok">
-        <b>앱이 계산한 재고입니다. 맞으면 그냥 넘기세요.</b><br>
-        다른 것만 고쳐 주시면 다음 주 계산이 정확해집니다.
-      </div>
-      ${rows}
-      <div class="card soft" style="margin-top:14px">
-        <div class="kv"><span>차이 나는 품목</span><b>2종</b></div>
-        <div class="kv"><span>차이 금액</span><b class="neg">−2,800원</b></div>
-      </div>
-      <div class="mini" style="margin-top:10px">시식·서비스로 나간 양입니다. 매주 크게 차이 나는 품목이 있으면 레시피를 다시 확인해 보세요.</div>
-    `,
-    f:`<div class="btn pri" data-go="home">맞습니다</div>`
-  };
+      <div class="card soft" style="margin-top:12px"><div class="kv"><span>지금 수익률</span><b class="pos">${pl().rate.toFixed(1)}%</b></div></div>`,
+    f:`<div class="btn pri" data-go="res">저장</div>`};
 };
 
-/* ---------------- 설명 ---------------- */
-const EX = {
-  home:['홈','매일 여기서 시작합니다. <b>할 일은 파일 올리기와 버린 것 적기 둘뿐</b>이고, 발주가 있는 날에만 추천이 붙습니다. 재고를 세라고 하지 않습니다.'],
-  upload:['매출 찍기','포스 마감 화면을 <b>사진으로 찍기만</b> 하면 됩니다. 파일을 내려받아 올리는 건 매일 하기엔 귀찮습니다. 글자를 못 읽은 줄은 표시해서 확인만 받습니다.'],
-  menupl:['메뉴별 뜯어보기','메뉴 하나가 <b>한 개 팔릴 때 실제로 얼마 남는지</b>입니다. 재료값·인건비·카드수수료·고정비 몫·부가세까지 다 뺐습니다. 위 칩으로 메뉴를 바꿔 보세요.'],
-  recipe:['새 메뉴','메뉴를 미리 등록시키지 않습니다. 사진에서 잡힌 새 메뉴에 <b>판매가와 재료를 한 번만</b> 묻습니다. 많이 팔린 순서로 하루 1~2개씩이고, 넘겨도 됩니다. 재료를 고를 때마다 남는 돈이 바로 보입니다.'],
-  bake:['오늘 구운 것','직접 만드는 품목만 나옵니다. <b>판 수만 적으면</b> 크림치즈·계란이 얼마나 나갔는지 앱이 계산합니다. 안 구운 날은 넘기면 됩니다.'],
-  cost:['원가','사 오는 것은 매입가가 원가지만 <b>직접 만드는 것은 재료값 합계 ÷ 나오는 개수</b>입니다. 크림치즈 값이 오르면 여기서 바로 보입니다. 인건비·전기값은 안 넣습니다.'],
-  waste:['버린 것 적기','매일 사장이 실제로 하는 유일한 입력입니다. 우유·생크림은 ml를 재지 않고 <b>통 단위 버튼</b>으로 받습니다. 금액이 바로 보입니다.'],
-  recv:['받은 물건 확인','납품일에만 나옵니다. 발주 확정 수량이 기본값이라 <b>버튼 한 번</b>이면 끝납니다. 이 값이 있어야 재고 계산이 맞습니다.'],
-  order:['오늘 할 일','<b>주방과 발주를 한 화면에 둡니다.</b> 굽는 카페의 진짜 고민은 "몇 개 시킬까"가 아니라 "몇 판 구울까"입니다. 구울 양이 정해져야 재료 발주량도 나옵니다.'],
-  detail:['추천 상세','계산 과정을 사장의 말로 씁니다. 값이 안 바뀌는 단계는 아예 안 보여줍니다. 수량을 바꾸면 단위 안내가 뜨지만 <b>막지는 않습니다</b>.'],
-  done:['확정 완료','거래처별로 묶습니다. 사장은 품목이 아니라 거래처 단위로 전화합니다. 실제 발주는 앱 밖에서 한다는 걸 분명히 적습니다.'],
-  res:['결과 확인','<b>수익 탭</b>을 눌러 보세요. 매출에서 재료값·인건비·버린 것·카드수수료·고정비·부가세를 다 뺀 <b>진짜 남는 돈과 수익률</b>이 나옵니다. 버린 것을 바꾸면 이 숫자가 같이 움직입니다.'],
-  fixed:['매장 설정','고정비·인건비·과세유형·카드비중을 한 번만 넣으면 매일 수익률에 반영됩니다. <b>사장님 시간을 넣고 보기</b>, <b>간이과세</b>를 눌러 보세요. 숫자가 크게 달라집니다.'],
-  count:['재고 맞추기','매일이 아니라 <b>주 1회</b>입니다. 세는 게 아니라 앱이 계산한 값을 확인하는 것이고, 대부분 그대로 넘어갑니다.'],
+/* 재고 맞추기 — 재료별로 묶고, 사는 단위마다 통 수를 정수로 센다 */
+V.count=()=>{
+  let dq=0, dm=0;
+  const groups=Object.keys(mats).map(m=>{
+    const calc=stockNow(m);
+    const keys=isMade(m)?[null]:skusOf(m);
+    // 손대지 않은 재료는 앱 계산이 맞는 것으로 본다 (여는 통 때문에 생기는 가짜 차이를 막는다)
+    const touched=keys.some(s=>S.count[s||m]!=null);
+    let counted=0;
+    const rows=keys.map(s=>{
+      const key=s||m, sk=s?skus[s]:{name:mats[m].name, cu:mats[m].u, size:1};
+      // 딴 통에 남은 건 안 센다 → 내림. 320g은 500g 한 팩이 아니다
+      const dflt=s?(s===mainSku(m)?Math.max(0,Math.floor(calc/sk.size)):0):Math.max(0,Math.floor(calc));
+      const v=S.count[key]??dflt;
+      counted+=v*sk.size;
+      const showBase=s&&skus[s].showBase;
+      return `<div class="row" style="padding:8px 2px"><span class="nm">${sk.name}
+          ${showBase?`<div class="mini">${fmt(m,sk.size)}짜리</div>`:''}</span>
+        <span class="stp"><span class="pill sm" data-act="c-" data-k="${key}">−</span>
+          <b style="min-width:44px">${showBase?Math.round(v*sk.size):v}</b>
+          <span class="pill sm" data-act="c+" data-k="${key}">+</span>
+          <span class="mini" style="width:26px">${showBase?mats[m].u:sk.cu}</span></span></div>`;
+    }).join('');
+    const diff=touched?counted-calc:0;
+    if(Math.abs(diff)>0.001){dq++; dm+=diff*costOf(m);}
+    return `<div class="grp"><div class="gh">
+        <span><b style="font-size:13px">${mats[m].name}</b>
+          <div class="mini">앱 계산 ${fmt(m,calc)}</div></span>
+        <span style="text-align:right">${touched?`<b>${fmt(m,counted)}</b>`:'<b class="mini">그대로</b>'}
+          ${Math.abs(diff)>0.001?`<div class="mini" style="color:var(--att)">${diff>0?'+':''}${fmt(m,Math.abs(diff))} 차이</div>`:'<div class="mini">맞음</div>'}</span>
+      </div>${rows}</div>`;
+  }).join('');
+  return {l:'← 홈|home', c:'재고 맞추기', r:'주 1회',
+    b:`<div class="note ok"><b>통을 세서 넣어 주세요.</b> 앱이 계산한 값이 미리 채워져 있으니
+        <b>다른 것만</b> 고치시면 됩니다. 여는 통은 세지 않아도 됩니다.</div>
+      ${groups}
+      <div class="card soft"><div class="kv"><span>차이 나는 재료</span><b>${dq}종</b></div>
+        <div class="kv"><span>차이 금액</span><b class="${dm<0?'neg':''}">${dm?원(dm):'0원'}</b></div></div>
+      <div class="mini" style="margin-top:10px">시식·서비스로 나간 양입니다. 매주 크게 차이 나면 레시피를 다시 확인해 보세요.</div>`,
+    f:`<div class="btn pri" data-act="saveCount">맞습니다</div>`};
 };
 
-/* ---------------- 렌더 ---------------- */
-const NAV = [
-  ['grp','매일'],
-  ['home','홈'],['upload','매출 찍기 (사진)'],['recipe','재료 알려주기'],['bake','오늘 구운 것'],['waste','버린 것 적기'],['recv','받은 물건 확인'],
-  ['grp','발주하는 날'],
-  ['order','오늘 할 일 (구울 것 + 발주)'],['detail','추천 상세'],['done','확정 완료'],
-  ['grp','보는 화면'],
-  ['res','결과 확인 · 수익률'],['menupl','메뉴별 뜯어보기'],['cost','원가 (직접 만드는 것)'],['fixed','매장 설정'],['count','재고 맞추기 (주 1회)'],
-];
+/* ══════════════ 설명 ══════════════ */
+const EX={
+  home:['홈','매일 여기서 시작합니다. 할 일은 <b>사진 올리기와 버린 것 적기</b> 둘뿐입니다.'],
+  upload:['매출 찍기','모든 줄의 수량을 고칠 수 있습니다. 흐릿한 줄은 확인하면 표시가 사라집니다.'],
+  recipe:['새 메뉴 묻기','매일 흐름에서 <b>모르는 메뉴가 있을 때만</b> 나옵니다. 다 알면 목록으로 넘어갑니다.'],
+  menuList:['메뉴와 재료','등록된 메뉴 전체. 메뉴를 누르면 판매가와 재료를 고칠 수 있습니다.'],
+  menuEdit:['메뉴 고치기','판매가와 재료 수량을 ± 로 고칩니다. 재료를 빼거나 새로 넣을 수도 있습니다. 고치면 <b>소모량·재고·발주·수익률이 전부 다시 계산</b>됩니다.'],
+  itemList:['품목','무엇을 사 오고 무엇을 굽는지. <b>크로플을 직접 만듦으로 바꾸면 오늘 구운 것에 나타납니다.</b>'],
+  itemEdit:['품목 고치기','들여오는 방법(사 옴·직접 만듦·원부자재), 사는 크기와 값, 굽는 것이면 한 판 재료와 나오는 개수를 정합니다.'],
+  bake:['오늘 구운 것','판 수만 적으면 크림치즈·계란이 얼마나 나갔는지 계산합니다.'],
+  cost:['원가','재료값 합계 ÷ 나오는 조각. 만드는 시간을 시급으로 환산해 사 오는 것과 견줍니다.'],
+  waste:['버린 것 적기','<b>사는 단위로</b> 적습니다. 우유 1L와 2.3L를 따로 셉니다. 여는 통은 반 통·1/4로 고릅니다.'],
+  recv:['받은 물건 확인','확정 수량이 기본값입니다. 다르게 왔으면 고칠 수 있습니다.'],
+  order:['오늘 할 일','7일 기록에서 실제로 계산합니다. 구울 양이 재료 발주에 반영됩니다.'],
+  detail:['추천 상세','<b>어느 크기로 시킬지 고를 수 있습니다.</b> 우유를 2.3L로 바꾸면 통 수가 다시 계산됩니다.'],
+  done:['확정 완료','거래처별로 묶습니다. 발주 내역 복사를 누르면 메신저에 붙여 넣을 텍스트가 복사됩니다.'],
+  res:['결과 확인','수익 탭을 눌러 보세요. 버린 것이나 매출을 바꾸면 같이 움직입니다.'],
+  menupl:['메뉴별 뜯어보기','한 개 팔릴 때 실제로 얼마 남는지.'],
+  fixed:['매장 설정','모든 값을 ± 로 고칩니다. 아래 수익률이 바로 따라옵니다.'],
+  count:['재고 맞추기','<b>재료별로 묶고 사는 단위마다 통 수를 셉니다.</b> 정수로만 올라갑니다. 우유 1L 3통 + 2.3L 1통 = 5.3L.'],
+};
 
+/* ══════════════ 렌더 ══════════════ */
+const NAV=[['ghd','매일'],['home','홈'],['upload','매출 찍기'],['bake','오늘 구운 것'],
+  ['waste','버린 것 적기'],['recv','받은 물건 확인'],
+  ['ghd','발주하는 날'],['order','오늘 할 일'],['detail','추천 상세'],['done','확정 완료'],
+  ['ghd','보는 화면'],['res','결과 확인 · 수익률'],['menupl','메뉴별 뜯어보기'],['cost','원가'],
+  ['ghd','등록해 둔 것'],['itemList','품목'],['menuList','메뉴와 재료'],['fixed','매장 설정'],['count','재고 맞추기']];
+let tt=null;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2400);}
 function render(){
-  const v = V[S.screen]();
+  const v=V[S.screen]();
   const hL=document.getElementById('hL');
-  hL.textContent = v.l ? v.l.split('|')[0] : '';
-  hL.dataset.go = v.l ? v.l.split('|')[1] : '';
-  document.getElementById('hC').textContent = v.c;
-  const hR=document.getElementById('hR'); hR.textContent=v.r||''; hR.style.display=v.r?'':'none';
-  document.getElementById('bd').innerHTML = v.b;
-  document.getElementById('ft').innerHTML = v.f || '';
-  document.getElementById('ft').style.display = v.f ? '' : 'none';
-  document.getElementById('bd').scrollTop = 0;
-
-  document.getElementById('nav').innerHTML = NAV.map(([k,l])=>
-    k==='grp' ? `<div class="grp">${l}</div>` : `<a data-go="${k}" class="${S.screen===k?'on':''}">${l}</a>`).join('');
-  const e = EX[S.screen]||['',''];
-  document.getElementById('expl').innerHTML = `<b>${e[0]}</b>${e[1]}`;
+  hL.textContent=v.l?v.l.split('|')[0]:''; hL.dataset.go=v.l?v.l.split('|')[1]:'';
+  document.getElementById('hC').textContent=v.c;
+  const hR=document.getElementById('hR');hR.textContent=v.r||'';hR.style.display=v.r?'':'none';
+  document.getElementById('bd').innerHTML=v.b;
+  const ft=document.getElementById('ft');ft.innerHTML=v.f||'';ft.style.display=v.f?'':'none';
+  document.getElementById('bd').scrollTop=0;
+  document.getElementById('nav').innerHTML=NAV.map(([k,l])=>
+    k==='ghd'?`<div class="ghd">${l}</div>`:`<a data-go="${k}" class="${S.screen===k?'on':''}">${l}</a>`).join('');
+  const e=EX[S.screen]||['',''];
+  document.getElementById('expl').innerHTML=`<b>${e[0]}</b>${e[1]}`;
 }
 
-document.addEventListener('click', ev=>{
-  const t = ev.target.closest('[data-go],[data-act]');
-  if(!t) return;
+/* ══════════════ 조작 ══════════════ */
+const bump=(o,k,d,min=0)=>{o[k]=Math.max(min,(o[k]||0)+d);};
+document.getElementById('reset').addEventListener('click',()=>{
+  S=blank(); menus=cloneMenus(); resetItems(); render(); toast('오늘 입력과 고친 설정을 초기화했습니다');});
+
+document.addEventListener('click',ev=>{
+  const t=ev.target.closest('[data-go],[data-act]'); if(!t) return;
   const act=t.dataset.act, go=t.dataset.go, k=t.dataset.k, v=t.dataset.v;
+  const ocrDone=x=>{S.ocrCheck=S.ocrCheck.filter(y=>y!==x);};
 
-  if(act==='up'){ S.uploaded=true; }
+  if(act==='up') S.uploaded=true;
+  if(act==='reshoot'){S.uploaded=false;S.ocrCheck=['clatte'];}
+  if(act==='s+'){bump(S.todaySales,k,1);ocrDone(k);}
+  if(act==='s-'){bump(S.todaySales,k,-1);ocrDone(k);}
+  if(act==='ocrOk') ocrDone(k);
+
+  if(act==='price') S.newPrice=+v;
   if(act==='chip'){ if(S.newRecipe[k]) delete S.newRecipe[k]; else S.newRecipe[k]=+v; }
-  if(act==='price'){ S.newPrice = +v; }
   if(act==='saveRecipe'){
-    S.recipeDone=true;
-    const m = sales.find(s=>s.menu==='딸기크로플');
-    if(m && S.newPrice) m.price = S.newPrice;
-    S.screen='bake';
+    if(S.newPrice) menus.skrofl.price=S.newPrice;
+    if(Object.keys(S.newRecipe).length) menus.skrofl.recipe={...S.newRecipe};
+    toast(josa(menus.skrofl.name,'을/를')+' 저장했습니다'); S.screen='bake';
   }
-  if(act==='b+'){ S.baked[k]++; }
-  if(act==='b-'){ S.baked[k]=Math.max(0,S.baked[k]-1); }
-  if(act==='w+'){ S.waste[k]++; }
-  if(act==='w-'){ S.waste[k]=Math.max(0,S.waste[k]-1); }
-  if(act==='wu'){ S.wasteUnit[k]=+v; }
-  if(act==='recvOk'||act==='recvDiff'){ S.received=true; S.screen='order'; }
-  if(act==='o+'){ S.order[S.detail]++; }
-  if(act==='o-'){ S.order[S.detail]=Math.max(0,S.order[S.detail]-1); }
-  if(act==='confirm'){ S.confirmed=true; S.screen='done'; }
-  if(act==='tab'){ S.resTab=v; }
-  if(act==='owner'){ S.ownerPay = v==='1'; }
-  if(act==='plm'){ S.plMenu = v; }
-  if(act==='tax'){ S.taxType = v; }
-  if(act==='card'){ S.cardRatio = +v; }
-  if(act==='reshoot'){ S.uploaded=false; }
+  if(act==='b+') bump(S.todayBaked,k,1);
+  if(act==='b-') bump(S.todayBaked,k,-1);
+  if(act==='w+') bump(S.todayWaste,k,1);
+  if(act==='w-') bump(S.todayWaste,k,-1);
+  if(act==='wu') S.todayWaste[k]=+v;
 
-  if(go){ if(k) S.detail=k; S.screen=go; }
+  if(act==='toRecv') S.screen=Object.keys(history[HIST[6]].suggested||{}).length?'recv':'order';
+  if(act==='recvDiff'){S.recvEdit=true;
+    const sug=history[HIST[6]].suggested; for(const s in sug) if(S.todayRecv[s]==null) S.todayRecv[s]=sug[s];}
+  if(act==='r+'){const sug=history[HIST[6]].suggested; S.todayRecv[k]=(S.todayRecv[k]??sug[k])+1;}
+  if(act==='r-'){const sug=history[HIST[6]].suggested; S.todayRecv[k]=Math.max(0,(S.todayRecv[k]??sug[k])-1);}
+  if(act==='recvOk'){const sug=history[HIST[6]].suggested;
+    for(const s in sug) if(S.todayRecv[s]==null) S.todayRecv[s]=sug[s];
+    S.recvEdit=false; S.screen='order'; toast('입고를 저장했습니다. 재고가 다시 계산됐습니다');}
+
+  // 메뉴 고치기 — 판매가·재료. skrofl 은 임시값을 정식 데이터로 옮긴 뒤 고친다
+  const editing=()=>{
+    const key=S.editMenu;
+    if(key==='skrofl'){
+      if(S.newPrice){ menus.skrofl.price=S.newPrice; S.newPrice=0; }
+      if(Object.keys(S.newRecipe).length){ menus.skrofl.recipe={...S.newRecipe}; S.newRecipe={}; }
+    }
+    if(!menus[key].recipe) menus[key].recipe={};
+    return menus[key];
+  };
+  if(act==='mp+'){ const m=editing(); m.price=(m.price||0)+500; }
+  if(act==='mp-'){ const m=editing(); m.price=Math.max(0,(m.price||0)-500); }
+  if(act==='ma+'||act==='ma-'){
+    const m=editing(), st=(mats[k].u==='ml'||mats[k].u==='g')?10:1;
+    m.recipe[k]=Math.max(0,(m.recipe[k]||0)+(act==='ma+'?st:-st));
+    if(m.recipe[k]===0) delete m.recipe[k];
+  }
+  if(act==='mdel'){ const m=editing(); delete m.recipe[k]; }
+  if(act==='madd'){ const m=editing(); m.recipe[k]=(mats[k].u==='ml'||mats[k].u==='g')?50:1; }
+
+  // 품목 고치기
+  const IT=()=>mats[S.editItem||'krofl'];
+  if(act==='toMade'){ const it=mats[k]; it.kind='직접 만듦';
+    it.batch=it.batch||{}; it.yield=it.yield||8; it.mins=it.mins||60;
+    S.editItem=k; S.screen='itemEdit';
+    toast(`${mats[k].name} — 한 판에 뭐가 들어가는지 알려주세요`); }
+  if(act==='ikind'){ const it=mats[k]; it.kind=v;
+    if(v==='직접 만듦'){ it.batch=it.batch||{}; it.yield=it.yield||8; it.mins=it.mins||60; }
+    toast(`${mats[k].name} → ${v}`); }
+  if(act==='ib+'||act==='ib-'){ const it=IT(); it.batch=it.batch||{};
+    const st=(mats[k].u==='ml'||mats[k].u==='g')?50:1;
+    it.batch[k]=Math.max(0,(it.batch[k]||0)+(act==='ib+'?st:-st));
+    if(!it.batch[k]) delete it.batch[k]; }
+  if(act==='ibdel'){ const it=IT(); delete it.batch[k]; }
+  if(act==='ibadd'){ const it=IT(); it.batch=it.batch||{};
+    it.batch[k]=(mats[k].u==='ml'||mats[k].u==='g')?100:1; }
+  if(act==='iy+') { const it=IT(); it.yield=(it.yield||0)+1; }
+  if(act==='iy-') { const it=IT(); it.yield=Math.max(1,(it.yield||1)-1); }
+  if(act==='im+') { const it=IT(); it.mins=(it.mins||0)+5; }
+  if(act==='im-') { const it=IT(); it.mins=Math.max(0,(it.mins||0)-5); }
+  if(act==='isz+'){ const sk=skus[k]; sk.size+=(mats[sk.mat].u==='개'?1:100); }
+  if(act==='isz-'){ const sk=skus[k]; sk.size=Math.max(1,sk.size-(mats[sk.mat].u==='개'?1:100)); }
+  if(act==='ipr+'){ skus[k].buy+=100; }
+  if(act==='ipr-'){ skus[k].buy=Math.max(0,skus[k].buy-100); }
+  if(act==='imain'){ const m=skus[k].mat; skusOf(m).forEach(s=>skus[s].main=(s===k)); delete S.orderSku[m]; }
+
+  if(act==='sku'){ S.orderSku[k]=v; delete S.order[k]; delete S.orderTouched[k]; }
+  if(act==='o+'||act==='o-'||act==='oset'){
+    const m=S.detail, base=orderSuggest(m).qty;
+    let cur=S.order[m]??base;
+    if(act==='o+')cur+=1; else if(act==='o-')cur=Math.max(0,cur-1); else cur=+v;
+    S.order[m]=cur; S.orderTouched[m]=cur!==base;
+  }
+  if(act==='confirm'){S.confirmed=true;S.screen='done';toast('확정했습니다. 실제 발주는 거래처에 직접 해주세요');}
+  if(act==='copy'){
+    const only=v||null;                       // 거래처 하나만 복사할 수 있다
+    const orders=orderList().filter(o=>!only||skus[o.sku].sup===only);
+    const bySup={}; orders.forEach(o=>{const s=skus[o.sku].sup;(bySup[s]=bySup[s]||[]).push(o);});
+    let txt='';
+    if(only){
+      txt=`${only} 사장님, ${md(TODAY)} 발주드립니다.\n\n`;
+      (bySup[only]||[]).forEach(o=>{const q=S.order[o.m]??o.qty,sk=skus[o.sku];
+        txt+=`${sk.name} ${qtyText(o.sku,q)}${sk.unit>1?` (${(q/sk.unit).toFixed(0)}${sk.box})`:''}\n`;});
+      txt+=`\n감사합니다.`;
+    } else {
+      txt=`[${md(TODAY)} 발주]\n`;
+      for(const sup in bySup){ txt+=`\n${sup} (마감 ${SUP[sup].deadline})\n`;
+        bySup[sup].forEach(o=>{const q=S.order[o.m]??o.qty,sk=skus[o.sku];
+          txt+=`- ${sk.name} ${qtyText(o.sku,q)}${sk.unit>1?` (${(q/sk.unit).toFixed(0)}${sk.box})`:''}\n`;});}
+    }
+    const n=orders.length;
+    const done=()=>toast(only?`${only} 발주 ${n}건을 복사했습니다. 메신저에 붙여 넣으세요`
+                              :`발주 ${n}건을 복사했습니다. 메신저에 붙여 넣으세요`);
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done).catch(done);
+    else {const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
+          try{document.execCommand('copy');}catch(e){} ta.remove(); done();}
+  }
+  if(act==='supFilter') S.supFilter=v;
+  if(act==='supAll') S.supFilter=null;
+  if(act==='tab') S.resTab=v;
+  if(act==='plm') S.plMenu=v;
+  if(act==='owner') S.ownerPay=(v==='1');
+  if(act==='tax') S.taxType=v;
+  if(act==='card') S.cardRatio=+v;
+  if(act==='fx+') S.fixed[k]+=10000;
+  if(act==='fx-') S.fixed[k]=Math.max(0,S.fixed[k]-10000);
+  if(act==='od+') S.openDays=Math.min(31,S.openDays+1);
+  if(act==='od-') S.openDays=Math.max(1,S.openDays-1);
+  if(act==='wg+') S.wage+=500;
+  if(act==='wg-') S.wage=Math.max(0,S.wage-500);
+  if(act==='sh+') S.staffHours=Math.min(24,S.staffHours+1);
+  if(act==='sh-') S.staffHours=Math.max(0,S.staffHours-1);
+  if(act==='oh+') S.ownerHours=Math.min(24,S.ownerHours+1);
+  if(act==='oh-') S.ownerHours=Math.max(0,S.ownerHours-1);
+
+  if(act==='c+'||act==='c-'){                       // 재고 실사 — 정수로만
+    const made=!!mats[k];
+    const size=made?1:skus[k].size, m=made?k:skus[k].mat;
+    const calc=stockNow(m);
+    const dflt=made?Math.max(0,Math.floor(calc)):(k===mainSku(m)?Math.max(0,Math.floor(calc/size)):0);
+    const cur=S.count[k]??dflt;
+    S.count[k]=Math.max(0, cur+(act==='c+'?1:-1));
+  }
+  if(act==='saveCount'){
+    let n=0, money=0;
+    for(const m in mats){
+      const calc=stockNow(m);
+      let counted=0, touched=false;
+      const keys=isMade(m)?[m]:skusOf(m);
+      keys.forEach(key=>{
+        const size=isMade(m)?1:skus[key].size;
+        const dflt=isMade(m)?Math.max(0,Math.floor(calc)):(key===mainSku(m)?Math.max(0,Math.floor(calc/size)):0);
+        if(S.count[key]!=null) touched=true;
+        counted+=(S.count[key]??dflt)*size;
+      });
+      if(!touched) continue;
+      const d=counted-calc;
+      if(Math.abs(d)>0.001){ S.stockAdj[m]=(S.stockAdj[m]||0)+d; money+=d*costOf(m); n++; }
+    }
+    S.count={}; S.screen='home';
+    toast(n?`${n}종을 맞췄습니다 (${money>0?'+':''}${Math.round(money).toLocaleString()}원). 추천에 바로 반영됩니다`:'재고가 맞습니다');
+  }
+  if(go){ if(k){ if(go==='menuEdit') S.editMenu=k;
+                 else if(go==='itemEdit') S.editItem=k;
+                 else S.detail=k; } S.screen=go; }
   render();
 });
-
 render();
 </script>
 </body>
